@@ -1,0 +1,250 @@
+###############################################################################
+#
+# IAR C/C++ Compiler V3.11.1.207 for STM8                 17/Jan/2020  20:56:10
+# Copyright 2010-2019 IAR Systems AB.
+# PC-locked license - IAR Embedded Workbench for STMicroelectronics STM8
+#
+#    Source file  =  
+#        H:\Project_For_AKS\STM8S\Libraries\STM8S_StdPeriph_Driver\src\stm8s_awu.c
+#    Command line =  
+#        -f C:\Users\chuti\AppData\Local\Temp\EW221F.tmp
+#        (H:\Project_For_AKS\STM8S\Libraries\STM8S_StdPeriph_Driver\src\stm8s_awu.c
+#        -e -On --no_cse --no_unroll --no_inline --no_code_motion --no_tbaa
+#        --no_cross_call --debug --code_model medium --data_model medium -o
+#        H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\STM8S103\Obj
+#        --dlib_config E:\CaiPhanMem\IAR-STM8\stm8\LIB\dlstm8mmn.h -D STM8S003
+#        -lcN H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\STM8S103\List
+#        -I H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\..\ -I
+#        H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\..\..\..\Libraries\STM8S_StdPeriph_Driver\inc\
+#        --vregs 16)
+#    Locale       =  English_USA.1252
+#    List file    =  
+#        H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\STM8S103\List\stm8s_awu.lst
+#    Object file  =  
+#        H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\STM8S103\Obj\stm8s_awu.o
+#
+###############################################################################
+
+H:\Project_For_AKS\STM8S\Libraries\STM8S_StdPeriph_Driver\src\stm8s_awu.c
+      1          /**
+      2            ******************************************************************************
+      3            * @file    stm8s_awu.c
+      4            * @author  MCD Application Team
+      5            * @version V2.2.0
+      6            * @date    30-September-2014
+      7            * @brief   This file contains all the functions for the AWU peripheral.  
+      8             ******************************************************************************
+      9            * @attention
+     10            *
+     11            * <h2><center>&copy; COPYRIGHT 2014 STMicroelectronics</center></h2>
+     12            *
+     13            * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
+     14            * You may not use this file except in compliance with the License.
+     15            * You may obtain a copy of the License at:
+     16            *
+     17            *        http://www.st.com/software_license_agreement_liberty_v2
+     18            *
+     19            * Unless required by applicable law or agreed to in writing, software 
+     20            * distributed under the License is distributed on an "AS IS" BASIS, 
+     21            * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     22            * See the License for the specific language governing permissions and
+     23            * limitations under the License.
+     24            *
+     25            ******************************************************************************
+     26            */
+     27          
+     28          /* Includes ------------------------------------------------------------------*/
+     29          #include "stm8s_awu.h"
+     30          
+     31          /** @addtogroup STM8S_StdPeriph_Driver
+     32            * @{
+     33            */
+     34          /* Private typedef -----------------------------------------------------------*/
+     35          /* Private define ------------------------------------------------------------*/
+     36          /* Private macro -------------------------------------------------------------*/
+     37          /* Private variables ---------------------------------------------------------*/
+     38          /* Private function prototypes -----------------------------------------------*/
+     39          /* Private functions ---------------------------------------------------------*/
+     40          
+     41          /* See also AWU_Timebase_TypeDef structure in stm8s_awu.h file :
+     42                                    N   2   5   1   2   4   8   1   3   6   1   2   5   1   2   1   3
+     43                                    O   5   0   m   m   m   m   6   2   4   2   5   1   s   s   2   0
+     44                                    I   0   0   s   s   s   s   m   m   m   8   6   2           s   s
+     45                                    T   u   u                   s   s   s   m   m   m
+     46                                        s   s                               s   s   s
+     47          */
+     48          /** Contains the different values to write in the APR register (used by AWU_Init function) */
+     49          CONST uint8_t APR_Array[17] =
+     50              {
+     51                  0, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 61, 23, 23, 62
+     52              };
+     53          
+     54          /** Contains the different values to write in the TBR register (used by AWU_Init function) */
+     55          CONST uint8_t TBR_Array[17] =
+     56              {
+     57                  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 12, 14, 15, 15
+     58              };
+     59          
+     60          /* Public functions ----------------------------------------------------------*/
+     61          
+     62          /**
+     63            * @addtogroup AWU_Public_Functions
+     64            * @{
+     65            */
+     66          
+     67          /**
+     68            * @brief  Deinitializes the AWU peripheral registers to their default reset
+     69            * values.
+     70            * @param  None
+     71            * @retval None
+     72            */
+     73          void AWU_DeInit(void)
+     74          {
+     75            AWU->CSR = AWU_CSR_RESET_VALUE;
+     76            AWU->APR = AWU_APR_RESET_VALUE;
+     77            AWU->TBR = AWU_TBR_RESET_VALUE;
+     78          }
+     79          
+     80          /**
+     81            * @brief  Initializes the AWU peripheral according to the specified parameters.
+     82            * @param   AWU_TimeBase : Time base selection (interval between AWU interrupts).
+     83            * can be one of the values of @ref AWU_Timebase_TypeDef.
+     84            * @retval None
+     85            * @par Required preconditions:
+     86            * The LS RC calibration must be performed before calling this function.
+     87            */
+     88          void AWU_Init(AWU_Timebase_TypeDef AWU_TimeBase)
+     89          {
+     90            /* Check parameter */
+     91            assert_param(IS_AWU_TIMEBASE_OK(AWU_TimeBase));
+     92            
+     93            /* Enable the AWU peripheral */
+     94            AWU->CSR |= AWU_CSR_AWUEN;
+     95            
+     96            /* Set the TimeBase */
+     97            AWU->TBR &= (uint8_t)(~AWU_TBR_AWUTB);
+     98            AWU->TBR |= TBR_Array[(uint8_t)AWU_TimeBase];
+     99            
+    100            /* Set the APR divider */
+    101            AWU->APR &= (uint8_t)(~AWU_APR_APR);
+    102            AWU->APR |= APR_Array[(uint8_t)AWU_TimeBase];
+    103          }
+    104          
+    105          /**
+    106            * @brief  Enable or disable the AWU peripheral.
+    107            * @param   NewState Indicates the new state of the AWU peripheral.
+    108            * @retval None
+    109            * @par Required preconditions:
+    110            * Initialisation of AWU and LS RC calibration must be done before.
+    111            */
+    112          void AWU_Cmd(FunctionalState NewState)
+    113          {
+    114            if (NewState != DISABLE)
+    115            {
+    116              /* Enable the AWU peripheral */
+    117              AWU->CSR |= AWU_CSR_AWUEN;
+    118            }
+    119            else
+    120            {
+    121              /* Disable the AWU peripheral */
+    122              AWU->CSR &= (uint8_t)(~AWU_CSR_AWUEN);
+    123            }
+    124          }
+    125          
+    126          /**
+    127            * @brief  Update APR register with the measured LSI frequency.
+    128            * @par Note on the APR calculation:
+    129            * A is the integer part of lsifreqkhz/4 and x the decimal part.
+    130            * x <= A/(1+2A) is equivalent to A >= x(1+2A) and also to 4A >= 4x(1+2A) [F1]
+    131            * but we know that A + x = lsifreqkhz/4 ==> 4x = lsifreqkhz-4A
+    132            * so [F1] can be written :
+    133            * 4A >= (lsifreqkhz-4A)(1+2A)
+    134            * @param   LSIFreqHz Low Speed RC frequency measured by timer (in Hz).
+    135            * @retval None
+    136            * @par Required preconditions:
+    137            * - AWU must be disabled to avoid unwanted interrupts.
+    138            */
+    139          void AWU_LSICalibrationConfig(uint32_t LSIFreqHz)
+    140          {
+    141            uint16_t lsifreqkhz = 0x0;
+    142            uint16_t A = 0x0;
+    143            
+    144            /* Check parameter */
+    145            assert_param(IS_LSI_FREQUENCY_OK(LSIFreqHz));
+    146            
+    147            lsifreqkhz = (uint16_t)(LSIFreqHz / 1000); /* Converts value in kHz */
+    148            
+    149            /* Calculation of AWU calibration value */
+    150            
+    151            A = (uint16_t)(lsifreqkhz >> 2U); /* Division by 4, keep integer part only */
+    152            
+    153            if ((4U * A) >= ((lsifreqkhz - (4U * A)) * (1U + (2U * A))))
+    154            {
+    155              AWU->APR = (uint8_t)(A - 2U);
+    156            }
+    157            else
+    158            {
+    159              AWU->APR = (uint8_t)(A - 1U);
+    160            }
+    161          }
+    162          
+    163          /**
+    164            * @brief  Configures AWU in Idle mode to reduce power consumption.
+    165            * @param  None
+    166            * @retval None
+    167            */
+    168          void AWU_IdleModeEnable(void)
+    169          {
+    170            /* Disable AWU peripheral */
+    171            AWU->CSR &= (uint8_t)(~AWU_CSR_AWUEN);
+    172            
+    173            /* No AWU timebase */
+    174            AWU->TBR = (uint8_t)(~AWU_TBR_AWUTB);
+    175          }
+    176          
+    177          /**
+    178            * @brief  Returns status of the AWU peripheral flag.
+    179            * @param  None
+    180            * @retval FlagStatus : Status of the AWU flag.
+    181            * This parameter can be any of the @ref FlagStatus enumeration.
+    182            */
+    183          FlagStatus AWU_GetFlagStatus(void)
+    184          {
+    185            return((FlagStatus)(((uint8_t)(AWU->CSR & AWU_CSR_AWUF) == (uint8_t)0x00) ? RESET : SET));
+    186          }
+    187          
+    188          
+    189          /**
+    190            * @}
+    191            */
+    192            
+    193          /**
+    194            * @}
+    195            */
+    196            
+    197          
+    198          /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+      74  ?_0
+      17  APR_Array
+      14  AWU_Cmd
+      13  AWU_DeInit
+      10  AWU_GetFlagStatus
+       9  AWU_IdleModeEnable
+     170  AWU_Init
+     157  AWU_LSICalibrationConfig
+      17  TBR_Array
+
+ 
+ 373 bytes in section .far_func.text
+ 108 bytes in section .near.rodata
+ 
+ 373 bytes of CODE  memory
+ 108 bytes of CONST memory
+
+Errors: none
+Warnings: none

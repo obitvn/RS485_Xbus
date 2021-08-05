@@ -1,0 +1,152 @@
+###############################################################################
+#
+# IAR C/C++ Compiler V3.11.1.207 for STM8                 17/Jan/2020  20:56:10
+# Copyright 2010-2019 IAR Systems AB.
+# PC-locked license - IAR Embedded Workbench for STMicroelectronics STM8
+#
+#    Source file  =  H:\Project_For_AKS\STM8S\Project\RS485_Xbus\read_switch.c
+#    Command line =  
+#        -f C:\Users\chuti\AppData\Local\Temp\EW2049.tmp
+#        (H:\Project_For_AKS\STM8S\Project\RS485_Xbus\read_switch.c -e -On
+#        --no_cse --no_unroll --no_inline --no_code_motion --no_tbaa
+#        --no_cross_call --debug --code_model medium --data_model medium -o
+#        H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\STM8S103\Obj
+#        --dlib_config E:\CaiPhanMem\IAR-STM8\stm8\LIB\dlstm8mmn.h -D STM8S003
+#        -lcN H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\STM8S103\List
+#        -I H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\..\ -I
+#        H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\..\..\..\Libraries\STM8S_StdPeriph_Driver\inc\
+#        --vregs 16)
+#    Locale       =  English_USA.1252
+#    List file    =  
+#        H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\STM8S103\List\read_switch.lst
+#    Object file  =  
+#        H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\STM8S103\Obj\read_switch.o
+#
+###############################################################################
+
+H:\Project_For_AKS\STM8S\Project\RS485_Xbus\read_switch.c
+      1          #include "stm8s.h"
+      2          #include "read_switch.h"
+      3          #include "stm8s_adc1.h"
+      4          
+      5          typedef struct
+      6          {
+      7            uint16_t ValueReadFromADC;
+      8            uint8_t HexRaw;
+      9          
+     10          }decdoder_value_type;
+     11          
+     12           decdoder_value_type encoder_table [16] ={
+     13           {0,0x00},
+     14           {510,0x01},
+     15           {363,0x02},
+     16           {620,0x03},
+     17           {225,0x04},
+     18           {574,0x05},
+     19           {465,0x06},
+     20           {661,0x07},
+     21           {130,0x08},
+     22           {546,0x09},
+     23           {420,0x0A},
+     24           {643,0x0B},
+     25           {307,0x0C},
+     26           {602,0x0D},
+     27           {495,0x0E},
+     28           {680,0x0F},
+     29          };
+     30          
+     31          
+     32          
+     33          void ReadSwitchInit()
+     34          {
+     35            ADC1_DeInit();
+     36            ADC1_PrescalerConfig(ADC1_PRESSEL_FCPU_D4); //Fcpu/4=D4 
+     37            ADC1_Init(ADC1_CONVERSIONMODE_CONTINUOUS, ADC1_CHANNEL_3|ADC1_CHANNEL_4, ADC1_PRESSEL_FCPU_D2, ADC1_EXTTRIG_TIM, DISABLE, ADC1_ALIGN_RIGHT, ADC1_SCHMITTTRIG_CHANNEL0, DISABLE);
+     38            //ADC1_Init(ADC1_CONVERSIONMODE_CONTINUOUS, ADC1_CHANNEL_4, ADC1_PRESSEL_FCPU_D2, ADC1_EXTTRIG_TIM, DISABLE, ADC1_ALIGN_RIGHT, ADC1_SCHMITTTRIG_CHANNEL0, DISABLE);
+     39            ADC1_ConversionConfig(ADC1_CONVERSIONMODE_CONTINUOUS,((ADC1_Channel_TypeDef)(ADC1_CHANNEL_3 | ADC1_CHANNEL_4)),ADC1_ALIGN_RIGHT);
+     40            ADC1_DataBufferCmd(ENABLE);
+     41            ADC1_Cmd(ENABLE);
+     42            ADC1_ScanModeCmd (ENABLE);
+     43            
+     44              
+     45          //  ADC1->CR1 |= (uint8_t)(ADC1_PRESSEL_FCPU_D4);
+     46          //  ADC1->CR2 &= (uint8_t)(~ADC1_CR2_ALIGN);
+     47          //  ADC1->CR2 |= (uint8_t)(ADC1_ALIGN_RIGHT);
+     48          //    /* Set the continuous conversion mode */
+     49          //  ADC1->CR1 |= ADC1_CR1_CONT;
+     50          //  /* Clear the ADC1 channels */
+     51          //  ADC1->CSR &= (uint8_t)(~ADC1_CSR_CH);
+     52          //  /* Select the ADC1 channel */
+     53          //  ADC1->CSR |= (uint8_t)((ADC1_Channel_TypeDef)(ADC1_CHANNEL_3 | ADC1_CHANNEL_4));
+     54          //  ADC1->CR3 |= ADC1_CR3_DBUF;
+     55          //  ADC1->CR2 |= ADC1_CR2_SCAN;
+     56            
+     57          }
+     58          
+     59          uint8_t GetLocationMinValue(uint16_t adc_value)
+     60          {
+     61            uint16_t min_value = adc_value;
+     62            uint8_t location_value_in_table=0;
+     63            uint16_t scratch_paper;
+     64            for(int i=0; i<16; i++)
+     65            {
+     66              scratch_paper = abs(adc_value - encoder_table[i].ValueReadFromADC);
+     67              if(min_value > scratch_paper) 
+     68                {
+     69                 min_value = scratch_paper;
+     70                 location_value_in_table = i;
+     71                }
+     72            }
+     73            return location_value_in_table;
+     74          }
+     75          
+     76          
+     77          uint8_t GetAddressBinaryFromADCValue(uint16_t adc_value)
+     78          {
+     79            uint8_t location_value_in_table;
+     80            location_value_in_table = GetLocationMinValue(adc_value);
+     81            return encoder_table[location_value_in_table].HexRaw;
+     82          }
+     83          
+     84          
+     85          
+     86          uint8_t AddressBoard()  
+     87          {
+     88            uint8_t msb,lsb, get;
+     89            uint16_t value_msb, value_lsb;
+     90            
+     91            ADC1_StartConversion();
+     92            while ( ADC1_GetFlagStatus (ADC1_FLAG_EOC) == 0);
+     93            ADC1_ClearITPendingBit (ADC1_IT_EOC); 
+     94            ADC1_ClearFlag (ADC1_FLAG_EOC);
+     95          
+     96            value_msb = ADC1_GetBufferValue (ADC1_CHANNEL_4);
+     97            value_lsb = ADC1_GetBufferValue (ADC1_CHANNEL_3);
+     98            msb = GetAddressBinaryFromADCValue(value_msb);
+     99            lsb = GetAddressBinaryFromADCValue(value_lsb);
+    100            nop();
+    101            msb = msb<<4;
+    102            msb= msb&0xf0;
+    103            get= msb|lsb;
+    104            return get;
+    105          }
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+      99  AddressBoard
+      35  GetAddressBinaryFromADCValue
+      91  GetLocationMinValue
+      67  ReadSwitchInit
+      48  encoder_table
+
+ 
+ 292 bytes in section .far_func.text
+  48 bytes in section .near.data
+ 
+ 292 bytes of CODE memory
+  48 bytes of DATA memory
+
+Errors: none
+Warnings: 2

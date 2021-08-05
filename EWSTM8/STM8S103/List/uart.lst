@@ -1,0 +1,267 @@
+###############################################################################
+#
+# IAR C/C++ Compiler V3.11.1.207 for STM8                 17/Jan/2020  20:56:11
+# Copyright 2010-2019 IAR Systems AB.
+# PC-locked license - IAR Embedded Workbench for STMicroelectronics STM8
+#
+#    Source file  =  H:\Project_For_AKS\STM8S\Project\RS485_Xbus\uart.c
+#    Command line =  
+#        -f C:\Users\chuti\AppData\Local\Temp\EW26F3.tmp
+#        (H:\Project_For_AKS\STM8S\Project\RS485_Xbus\uart.c -e -On --no_cse
+#        --no_unroll --no_inline --no_code_motion --no_tbaa --no_cross_call
+#        --debug --code_model medium --data_model medium -o
+#        H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\STM8S103\Obj
+#        --dlib_config E:\CaiPhanMem\IAR-STM8\stm8\LIB\dlstm8mmn.h -D STM8S003
+#        -lcN H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\STM8S103\List
+#        -I H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\..\ -I
+#        H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\..\..\..\Libraries\STM8S_StdPeriph_Driver\inc\
+#        --vregs 16)
+#    Locale       =  English_USA.1252
+#    List file    =  
+#        H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\STM8S103\List\uart.lst
+#    Object file  =  
+#        H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\STM8S103\Obj\uart.o
+#
+###############################################################################
+
+H:\Project_For_AKS\STM8S\Project\RS485_Xbus\uart.c
+      1          #include "stm8s.h"
+      2          #include "uart.h"
+      3          #include "delay.h"
+      4          
+      5          
+      6          
+      7          status_BUS UartState;
+      8          
+      9          uint8_t is_device, data_correct;
+     10          
+     11          uint32_t timeout_uart, time_last_uart;
+     12          uint8_t UartData, AddSendPack;
+     13          uint8_t AddDevice;
+     14          uint16_t DataLength;
+     15          uint8_t DataBuff[RS485_UART_BUFFER_MAX_SIZE], data_index;
+     16          
+     17          void UART_CallBack()
+     18          {
+     19            UartData=0;
+     20            UartData = UART1_ReceiveData8();
+     21            //timeout_uart = GetMicroTick() - time_last_uart;
+     22            switch (UartState)
+     23            {
+     24          
+     25              
+     26              case WAIT_FOR_FLAG_START:
+     27                if((UartData=='X')) UartState = CHECK_B;
+     28                else UartState = WAIT_FOR_FLAG_START;
+     29                break;
+     30                
+     31              case CHECK_B:
+     32                if((UartData=='B')) UartState = CHECK_U;
+     33                else UartState = WAIT_FOR_FLAG_START;
+     34                break;
+     35                
+     36              case CHECK_U:
+     37                if((UartData=='U')) UartState = CHECK_S;
+     38                else UartState = WAIT_FOR_FLAG_START;
+     39                break;
+     40                
+     41              case CHECK_S:
+     42                if((UartData=='S')) UartState = CHECK_ADD_RECEVICE;
+     43                else UartState = WAIT_FOR_FLAG_START;
+     44                break;;
+     45                
+     46              case CHECK_ADD_RECEVICE:
+     47                if(AddDevice == UartData) is_device=1;
+     48                else is_device=0;
+     49                UartState = SAVE_ADD_SEND;
+     50                break;
+     51                
+     52              case SAVE_ADD_SEND:
+     53                AddSendPack = UartData;
+     54                UartState = READ_DATA_LEN_MSB;
+     55                break;
+     56                
+     57             case READ_DATA_LEN_MSB:
+     58                DataLength = UartData;
+     59                UartState = READ_DATA_LEN_LSB;
+     60                break;
+     61                
+     62             case READ_DATA_LEN_LSB:
+     63                DataLength = (DataLength<<8)|UartData;
+     64                UartState = READ_DATA;
+     65                data_index=0;
+     66                break;
+     67                
+     68             case READ_DATA:
+     69                if((data_index < DataLength)&&(DataLength < RS485_UART_BUFFER_MAX_SIZE))
+     70                {
+     71                  DataBuff[data_index++] = UartData;
+     72                  
+     73                  if(data_index == DataLength) UartState = CHECK_FLAG_STOP_CR;
+     74                  else UartState = READ_DATA;
+     75                }
+     76                else UartState = WAIT_FOR_FLAG_START;
+     77                break;
+     78                
+     79             case CHECK_FLAG_STOP_CR:
+     80                if(UartData == 13) // \r
+     81                {
+     82                  UartState = CHECK_FLAG_STOP_LF;
+     83                }
+     84                else UartState = WAIT_FOR_FLAG_START;
+     85                break;
+     86                
+     87             case CHECK_FLAG_STOP_LF:
+     88                if(UartData == 10) // \n
+     89                {
+     90                  data_correct=1;
+     91                }
+     92                else data_correct=0;
+     93                UartState = WAIT_FOR_FLAG_START;
+     94                break;
+     95            }
+     96          }
+     97          
+     98          //void UartProcessInMainLoop(uint8_t* data, uint16_t len_data, uint8_t add_send)
+     99          //{
+    100            /*
+    101             switch (UartState)
+    102             {
+    103               case WAIT_TIME_FOR_STOP:
+    104                  if((GetMicroTick() - time_last_uart)>100) 
+    105                  {
+    106                    UartState = DATA_CORRECT;
+    107                  }
+    108                  else UartState = WAIT_FOR_FLAG_START;
+    109                  break;
+    110               case DATA_CORRECT:
+    111                  for(int i=0; i<len_data; i++)
+    112                  {
+    113                    data[i] = DataBuff[i];
+    114                  }
+    115                  UartState = ENABLE_SEND_DATA;
+    116                  break;
+    117             }
+    118          */
+    119          //}
+    120          
+    121          void UART_Config(void)
+    122          {
+    123            
+    124              UART1_DeInit();
+    125            
+    126              UART1_Init((uint32_t)9600, UART1_WORDLENGTH_8D, UART1_STOPBITS_1, UART1_PARITY_NO, UART1_SYNCMODE_CLOCK_DISABLE, UART1_MODE_TXRX_ENABLE);
+    127              UART1_ITConfig(UART1_IT_RXNE_OR,ENABLE);
+    128              UART1_Cmd(ENABLE);
+    129              
+    130            /*
+    131              UART1->CR1 |= (uint8_t)UART1_WORDLENGTH_8D;
+    132              UART1->CR3 |= (uint8_t)UART1_STOPBITS_1;
+    133              UART1->CR1 |= (uint8_t)UART1_PARITY_NO;
+    134              UART1->BRR2 |= 0x0a;
+    135              UART1->BRR1 |= 0x08;
+    136              UART1->CR2 |= (uint8_t)UART1_CR2_TEN; 
+    137              UART1->CR2 |= (uint8_t)UART1_CR2_REN;  
+    138              UART1->CR3 &= (uint8_t)(~UART1_CR3_CKEN); 
+    139              */
+    140              UART1_ITConfig(UART1_IT_RXNE_OR,ENABLE);
+    141              UART1_Cmd(ENABLE);
+    142              
+    143              GPIO_Init(GPIOD, GPIO_PIN_4, GPIO_MODE_OUT_PP_LOW_FAST);
+    144              GPIO_WriteLow(GPIOD,GPIO_PIN_4);
+    145              UartState = WAIT_FOR_FLAG_START;
+    146              time_last_uart = GetMicroTick();
+    147          
+    148          }
+    149          
+    150          void UART_PutChar(uint8_t c)
+    151          {
+    152            
+    153            UART1_SendData8(c);
+    154            while(UART1_GetFlagStatus(UART1_FLAG_TXE)==RESET);
+    155            
+    156          }
+    157          
+    158          
+    159          void UART_Puts(uint8_t *data, uint16_t len_data)
+    160          {
+    161           for(int i=0; i<len_data; i++)
+    162            {
+    163              UART_PutChar(*data);
+    164              data++;
+    165              while (UART1_GetFlagStatus(UART1_FLAG_TXE) == RESET);
+    166            }
+    167          }
+    168          
+    169          void AddDeviceToText(uint8_t add)
+    170          {
+    171            uint8_t add_lsb, add_msb;
+    172            add_msb = add >> 4;
+    173            if(add_msb < 10) UART_PutChar(add_msb +48);
+    174              else UART_PutChar(add_msb + 55); 
+    175            add_lsb =add<<4;
+    176            add_lsb = add_lsb >> 4;  
+    177            if(add_lsb < 10) UART_PutChar(add_lsb +48);
+    178              else UART_PutChar(add_lsb + 55); 
+    179          }
+    180          
+    181          uint8_t SendPackageToRS485(uint8_t add_recevice_pack)
+    182          {
+    183            if( UartState == WAIT_FOR_FLAG_START)
+    184            {
+    185              GPIO_WriteHigh(GPIOD,GPIO_PIN_4);
+    186              delay_ms(8);
+    187              UART_Puts("XBUS",4);
+    188              UART_PutChar(add_recevice_pack);
+    189              UART_PutChar(AddDevice);
+    190              UART_PutChar(0x00);
+    191              UART_PutChar(0x0A);
+    192              UART_Puts("\r\nID:",5); 
+    193              AddDeviceToText(AddDevice);
+    194              UART_PutChar('@');
+    195              AddDeviceToText(AddDevice);
+    196              UART_PutChar(13);
+    197              UART_PutChar(10);
+    198              delay_ms(8);
+    199              GPIO_WriteLow(GPIOD,GPIO_PIN_4);
+    200              UartState = WAIT_FOR_FLAG_START;
+    201              return 1;
+    202            }
+    203            else return 0;
+    204          }
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       5  ?_0
+       6  ?_1
+       1  AddDevice
+      85  AddDeviceToText
+       1  AddSendPack
+      32  DataBuff
+       2  DataLength
+     147  SendPackageToRS485
+     335  UART_CallBack
+      97  UART_Config
+      26  UART_PutChar
+      57  UART_Puts
+       1  UartData
+       1  UartState
+       1  data_correct
+       1  data_index
+       1  is_device
+       4  time_last_uart
+       4  timeout_uart
+
+ 
+ 747 bytes in section .far_func.text
+  49 bytes in section .near.bss
+  11 bytes in section .near.rodata
+ 
+ 747 bytes of CODE  memory
+  11 bytes of CONST memory
+  49 bytes of DATA  memory
+
+Errors: none
+Warnings: none

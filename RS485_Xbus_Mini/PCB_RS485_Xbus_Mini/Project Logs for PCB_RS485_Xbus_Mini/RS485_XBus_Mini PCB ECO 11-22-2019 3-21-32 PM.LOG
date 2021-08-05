@@ -1,0 +1,12 @@
+Change Component Footprint: Designator=U2 Old Footprint=TSOP20 New Footprint=TSSOP65P440X650-20N
+Added Component: Designator=D2(DIO-SMD-106)
+Add component. Clean all parameters for all variants
+Added Component: Designator=TVS3(DIO-SMD-B)
+Add component. Clean all parameters for all variants
+Added Pin To Net: NetName=GND Pin=D2-1
+Added Pin To Net: NetName=VIN Pin=D2-2
+Added Pin To Net: NetName=GND Pin=TVS3-1
+Added Pin To Net: NetName=VIN Pin=TVS3-2
+Added Member To Class: ClassName=RS485_Xbus_Mini Member=Component D2 Diode
+Added Member To Class: ClassName=RS485_Xbus_Mini Member=Component TVS3 PSD12C
+Added Room: Name=RS485_Xbus_Mini

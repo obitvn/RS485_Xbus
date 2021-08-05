@@ -1,0 +1,496 @@
+###############################################################################
+#
+# IAR C/C++ Compiler V3.11.1.207 for STM8                 17/Jan/2020  20:56:11
+# Copyright 2010-2019 IAR Systems AB.
+# PC-locked license - IAR Embedded Workbench for STMicroelectronics STM8
+#
+#    Source file  =  
+#        H:\Project_For_AKS\STM8S\Libraries\STM8S_StdPeriph_Driver\src\stm8s_spi.c
+#    Command line =  
+#        -f C:\Users\chuti\AppData\Local\Temp\EW24CA.tmp
+#        (H:\Project_For_AKS\STM8S\Libraries\STM8S_StdPeriph_Driver\src\stm8s_spi.c
+#        -e -On --no_cse --no_unroll --no_inline --no_code_motion --no_tbaa
+#        --no_cross_call --debug --code_model medium --data_model medium -o
+#        H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\STM8S103\Obj
+#        --dlib_config E:\CaiPhanMem\IAR-STM8\stm8\LIB\dlstm8mmn.h -D STM8S003
+#        -lcN H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\STM8S103\List
+#        -I H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\..\ -I
+#        H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\..\..\..\Libraries\STM8S_StdPeriph_Driver\inc\
+#        --vregs 16)
+#    Locale       =  English_USA.1252
+#    List file    =  
+#        H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\STM8S103\List\stm8s_spi.lst
+#    Object file  =  
+#        H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\STM8S103\Obj\stm8s_spi.o
+#
+###############################################################################
+
+H:\Project_For_AKS\STM8S\Libraries\STM8S_StdPeriph_Driver\src\stm8s_spi.c
+      1          /**
+      2            ******************************************************************************
+      3            * @file    stm8s_spi.c
+      4            * @author  MCD Application Team
+      5            * @version V2.2.0
+      6            * @date    30-September-2014
+      7            * @brief   This file contains all the functions for the SPI peripheral.
+      8             ******************************************************************************
+      9            * @attention
+     10            *
+     11            * <h2><center>&copy; COPYRIGHT 2014 STMicroelectronics</center></h2>
+     12            *
+     13            * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
+     14            * You may not use this file except in compliance with the License.
+     15            * You may obtain a copy of the License at:
+     16            *
+     17            *        http://www.st.com/software_license_agreement_liberty_v2
+     18            *
+     19            * Unless required by applicable law or agreed to in writing, software 
+     20            * distributed under the License is distributed on an "AS IS" BASIS, 
+     21            * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     22            * See the License for the specific language governing permissions and
+     23            * limitations under the License.
+     24            *
+     25            ******************************************************************************
+     26            */
+     27          
+     28          /* Includes ------------------------------------------------------------------*/
+     29          #include "stm8s_spi.h"
+     30          
+     31          /** @addtogroup STM8S_StdPeriph_Driver
+     32            * @{
+     33            */
+     34            
+     35          /* Private define ------------------------------------------------------------*/
+     36          /* Private macro -------------------------------------------------------------*/
+     37          /* Private variables ---------------------------------------------------------*/
+     38          /* Private function prototypes -----------------------------------------------*/
+     39          /* Private functions ---------------------------------------------------------*/
+     40          
+     41          /** @addtogroup SPI_Public_Functions
+     42            * @{
+     43            */
+     44          
+     45          /**
+     46            * @brief  Deinitializes the SPI peripheral registers to their default reset values.
+     47            * @param  None
+     48            * @retval None
+     49            */
+     50          void SPI_DeInit(void)
+     51          {
+     52            SPI->CR1    = SPI_CR1_RESET_VALUE;
+     53            SPI->CR2    = SPI_CR2_RESET_VALUE;
+     54            SPI->ICR    = SPI_ICR_RESET_VALUE;
+     55            SPI->SR     = SPI_SR_RESET_VALUE;
+     56            SPI->CRCPR  = SPI_CRCPR_RESET_VALUE;
+     57          }
+     58          
+     59          /**
+     60            * @brief  Initializes the SPI according to the specified parameters.
+     61            * @param  FirstBit : This parameter can be any of the 
+     62            *         @ref SPI_FirstBit_TypeDef enumeration.
+     63            * @param  BaudRatePrescaler : This parameter can be any of the 
+     64            *         @ref SPI_BaudRatePrescaler_TypeDef enumeration.
+     65            * @param  Mode : This parameter can be any of the  
+     66            *         @ref SPI_Mode_TypeDef enumeration.
+     67            * @param  ClockPolarity : This parameter can be any of the 
+     68            *         @ref SPI_ClockPolarity_TypeDef enumeration.
+     69            * @param  ClockPhase : This parameter can be any of the 
+     70            *         @ref SPI_ClockPhase_TypeDef enumeration.
+     71            * @param  Data_Direction : This parameter can be any of the 
+     72            *         @ref SPI_DataDirection_TypeDef enumeration.
+     73            * @param  Slave_Management : This parameter can be any of the 
+     74            *         @ref SPI_NSS_TypeDef enumeration.
+     75            * @param  CRCPolynomial : Configures the CRC polynomial.
+     76            * @retval None
+     77            */
+     78          void SPI_Init(SPI_FirstBit_TypeDef FirstBit, SPI_BaudRatePrescaler_TypeDef BaudRatePrescaler, SPI_Mode_TypeDef Mode, SPI_ClockPolarity_TypeDef ClockPolarity, SPI_ClockPhase_TypeDef ClockPhase, SPI_DataDirection_TypeDef Data_Direction, SPI_NSS_TypeDef Slave_Management, uint8_t CRCPolynomial)
+     79          {
+     80            /* Check structure elements */
+     81            assert_param(IS_SPI_FIRSTBIT_OK(FirstBit));
+     82            assert_param(IS_SPI_BAUDRATE_PRESCALER_OK(BaudRatePrescaler));
+     83            assert_param(IS_SPI_MODE_OK(Mode));
+     84            assert_param(IS_SPI_POLARITY_OK(ClockPolarity));
+     85            assert_param(IS_SPI_PHASE_OK(ClockPhase));
+     86            assert_param(IS_SPI_DATA_DIRECTION_OK(Data_Direction));
+     87            assert_param(IS_SPI_SLAVEMANAGEMENT_OK(Slave_Management));
+     88            assert_param(IS_SPI_CRC_POLYNOMIAL_OK(CRCPolynomial));
+     89            
+     90            /* Frame Format, BaudRate, Clock Polarity and Phase configuration */
+     91            SPI->CR1 = (uint8_t)((uint8_t)((uint8_t)FirstBit | BaudRatePrescaler) |
+     92                                 (uint8_t)((uint8_t)ClockPolarity | ClockPhase));
+     93            
+     94            /* Data direction configuration: BDM, BDOE and RXONLY bits */
+     95            SPI->CR2 = (uint8_t)((uint8_t)(Data_Direction) | (uint8_t)(Slave_Management));
+     96            
+     97            if (Mode == SPI_MODE_MASTER)
+     98            {
+     99              SPI->CR2 |= (uint8_t)SPI_CR2_SSI;
+    100            }
+    101            else
+    102            {
+    103              SPI->CR2 &= (uint8_t)~(SPI_CR2_SSI);
+    104            }
+    105            
+    106            /* Master/Slave mode configuration */
+    107            SPI->CR1 |= (uint8_t)(Mode);
+    108            
+    109            /* CRC configuration */
+    110            SPI->CRCPR = (uint8_t)CRCPolynomial;
+    111          }
+    112          
+    113          /**
+    114            * @brief  Enables or disables the SPI peripheral.
+    115            * @param  NewState New state of the SPI peripheral.
+    116            *         This parameter can be: ENABLE or DISABLE
+    117            * @retval None
+    118            */
+    119          void SPI_Cmd(FunctionalState NewState)
+    120          {
+    121            /* Check function parameters */
+    122            assert_param(IS_FUNCTIONALSTATE_OK(NewState));
+    123            
+    124            if (NewState != DISABLE)
+    125            {
+    126              SPI->CR1 |= SPI_CR1_SPE; /* Enable the SPI peripheral*/
+    127            }
+    128            else
+    129            {
+    130              SPI->CR1 &= (uint8_t)(~SPI_CR1_SPE); /* Disable the SPI peripheral*/
+    131            }
+    132          }
+    133          
+    134          /**
+    135            * @brief  Enables or disables the specified interrupts.
+    136            * @param  SPI_IT Specifies the SPI interrupts sources to be enabled or disabled.
+    137            * @param  NewState: The new state of the specified SPI interrupts.
+    138            *         This parameter can be: ENABLE or DISABLE.
+    139            * @retval None
+    140            */
+    141          void SPI_ITConfig(SPI_IT_TypeDef SPI_IT, FunctionalState NewState)
+    142          {
+    143            uint8_t itpos = 0;
+    144            /* Check function parameters */
+    145            assert_param(IS_SPI_CONFIG_IT_OK(SPI_IT));
+    146            assert_param(IS_FUNCTIONALSTATE_OK(NewState));
+    147            
+    148            /* Get the SPI IT index */
+    149            itpos = (uint8_t)((uint8_t)1 << (uint8_t)((uint8_t)SPI_IT & (uint8_t)0x0F));
+    150            
+    151            if (NewState != DISABLE)
+    152            {
+    153              SPI->ICR |= itpos; /* Enable interrupt*/
+    154            }
+    155            else
+    156            {
+    157              SPI->ICR &= (uint8_t)(~itpos); /* Disable interrupt*/
+    158            }
+    159          }
+    160          
+    161          /**
+    162            * @brief  Transmits a Data through the SPI peripheral.
+    163            * @param  Data : Byte to be transmitted.
+    164            * @retval None
+    165            */
+    166          void SPI_SendData(uint8_t Data)
+    167          {
+    168            SPI->DR = Data; /* Write in the DR register the data to be sent*/
+    169          }
+    170          
+    171          /**
+    172            * @brief  Returns the most recent received data by the SPI peripheral.
+    173            * @param  None
+    174            * @retval The value of the received data.
+    175            */
+    176          uint8_t SPI_ReceiveData(void)
+    177          {
+    178            return ((uint8_t)SPI->DR); /* Return the data in the DR register*/
+    179          }
+    180          
+    181          /**
+    182            * @brief  Configures internally by software the NSS pin.
+    183            * @param  NewState Indicates the new state of the SPI Software slave management.
+    184            *         This parameter can be: ENABLE or DISABLE.
+    185            * @retval None
+    186            */
+    187          void SPI_NSSInternalSoftwareCmd(FunctionalState NewState)
+    188          {
+    189            /* Check function parameters */
+    190            assert_param(IS_FUNCTIONALSTATE_OK(NewState));
+    191            
+    192            if (NewState != DISABLE)
+    193            {
+    194              SPI->CR2 |= SPI_CR2_SSI; /* Set NSS pin internally by software*/
+    195            }
+    196            else
+    197            {
+    198              SPI->CR2 &= (uint8_t)(~SPI_CR2_SSI); /* Reset NSS pin internally by software*/
+    199            }
+    200          }
+    201          
+    202          /**
+    203            * @brief  Enables the transmit of the CRC value.
+    204            * @param  None
+    205            * @retval None
+    206            */
+    207          void SPI_TransmitCRC(void)
+    208          {
+    209            SPI->CR2 |= SPI_CR2_CRCNEXT; /* Enable the CRC transmission*/
+    210          }
+    211          
+    212          /**
+    213            * @brief  Enables or disables the CRC value calculation of the transferred bytes.
+    214            * @param  NewState Indicates the new state of the SPI CRC value calculation.
+    215            *         This parameter can be: ENABLE or DISABLE.
+    216            * @retval None
+    217            */
+    218          void SPI_CalculateCRCCmd(FunctionalState NewState)
+    219          {
+    220            /* Check function parameters */
+    221            assert_param(IS_FUNCTIONALSTATE_OK(NewState));
+    222            
+    223            if (NewState != DISABLE)
+    224            {
+    225              SPI->CR2 |= SPI_CR2_CRCEN; /* Enable the CRC calculation*/
+    226            }
+    227            else
+    228            {
+    229              SPI->CR2 &= (uint8_t)(~SPI_CR2_CRCEN); /* Disable the CRC calculation*/
+    230            }
+    231          }
+    232          
+    233          /**
+    234            * @brief  Returns the transmit or the receive CRC register value.
+    235            * @param  SPI_CRC Specifies the CRC register to be read.
+    236            * @retval The selected CRC register value.
+    237            */
+    238          uint8_t SPI_GetCRC(SPI_CRC_TypeDef SPI_CRC)
+    239          {
+    240            uint8_t crcreg = 0;
+    241            
+    242            /* Check function parameters */
+    243            assert_param(IS_SPI_CRC_OK(SPI_CRC));
+    244            
+    245            if (SPI_CRC != SPI_CRC_RX)
+    246            {
+    247              crcreg = SPI->TXCRCR;  /* Get the Tx CRC register*/
+    248            }
+    249            else
+    250            {
+    251              crcreg = SPI->RXCRCR; /* Get the Rx CRC register*/
+    252            }
+    253            
+    254            /* Return the selected CRC register status*/
+    255            return crcreg;
+    256          }
+    257          
+    258          /**
+    259            * @brief  Reset the Rx CRCR and Tx CRCR registers.
+    260            * @param  None
+    261            * @retval None
+    262            */
+    263          void SPI_ResetCRC(void)
+    264          {
+    265            /* Rx CRCR & Tx CRCR registers are reset when CRCEN (hardware calculation)
+    266            bit in SPI_CR2 is written to 1 (enable) */
+    267            SPI_CalculateCRCCmd(ENABLE);
+    268            
+    269            /* Previous function disable the SPI */
+    270            SPI_Cmd(ENABLE);
+    271          }
+    272          
+    273          /**
+    274            * @brief  Returns the CRC Polynomial register value.
+    275            * @param  None
+    276            * @retval The CRC Polynomial register value.
+    277            */
+    278          uint8_t SPI_GetCRCPolynomial(void)
+    279          {
+    280            return SPI->CRCPR; /* Return the CRC polynomial register */
+    281          }
+    282          
+    283          /**
+    284            * @brief  Selects the data transfer direction in bi-directional mode.
+    285            * @param  SPI_Direction Specifies the data transfer direction in bi-directional mode.
+    286            * @retval None
+    287            */
+    288          void SPI_BiDirectionalLineConfig(SPI_Direction_TypeDef SPI_Direction)
+    289          {
+    290            /* Check function parameters */
+    291            assert_param(IS_SPI_DIRECTION_OK(SPI_Direction));
+    292            
+    293            if (SPI_Direction != SPI_DIRECTION_RX)
+    294            {
+    295              SPI->CR2 |= SPI_CR2_BDOE; /* Set the Tx only mode*/
+    296            }
+    297            else
+    298            {
+    299              SPI->CR2 &= (uint8_t)(~SPI_CR2_BDOE); /* Set the Rx only mode*/
+    300            }
+    301          }
+    302          
+    303          /**
+    304            * @brief  Checks whether the specified SPI flag is set or not.
+    305            * @param  SPI_FLAG : Specifies the flag to check.
+    306            *         This parameter can be any of the @ref SPI_FLAG_TypeDef enumeration.
+    307            * @retval FlagStatus : Indicates the state of SPI_FLAG.
+    308            *         This parameter can be any of the @ref FlagStatus enumeration.
+    309            */
+    310          
+    311          FlagStatus SPI_GetFlagStatus(SPI_Flag_TypeDef SPI_FLAG)
+    312          {
+    313            FlagStatus status = RESET;
+    314            /* Check parameters */
+    315            assert_param(IS_SPI_FLAGS_OK(SPI_FLAG));
+    316            
+    317            /* Check the status of the specified SPI flag */
+    318            if ((SPI->SR & (uint8_t)SPI_FLAG) != (uint8_t)RESET)
+    319            {
+    320              status = SET; /* SPI_FLAG is set */
+    321            }
+    322            else
+    323            {
+    324              status = RESET; /* SPI_FLAG is reset*/
+    325            }
+    326            
+    327            /* Return the SPI_FLAG status */
+    328            return status;
+    329          }
+    330          
+    331          /**
+    332            * @brief  Clears the SPI flags.
+    333            * @param  SPI_FLAG : Specifies the flag to clear.
+    334            *         This parameter can be one of the following values:
+    335            *         - SPI_FLAG_CRCERR
+    336            *         - SPI_FLAG_WKUP
+    337            * @note   - OVR (OverRun Error) interrupt pending bit is cleared by software
+    338            *         sequence:
+    339            *         a read operation to SPI_DR register (SPI_ReceiveData()) followed by
+    340            *         a read operation to SPI_SR register (SPI_GetFlagStatus()).
+    341            *         - MODF (Mode Fault) interrupt pending bit is cleared by software sequence:
+    342            *         a read/write operation to SPI_SR register (SPI_GetFlagStatus()) followed by
+    343            *         a write operation to SPI_CR1 register (SPI_Cmd() to enable the SPI).
+    344            * @retval None
+    345            */
+    346          void SPI_ClearFlag(SPI_Flag_TypeDef SPI_FLAG)
+    347          {
+    348            assert_param(IS_SPI_CLEAR_FLAGS_OK(SPI_FLAG));
+    349            /* Clear the flag bit */
+    350            SPI->SR = (uint8_t)(~SPI_FLAG);
+    351          }
+    352          
+    353          /**
+    354            * @brief  Checks whether the specified interrupt has occurred or not.
+    355            * @param  SPI_IT: Specifies the SPI interrupt pending bit to check.
+    356            *         This parameter can be one of the following values:
+    357            *         - SPI_IT_CRCERR
+    358            *         - SPI_IT_WKUP
+    359            *         - SPI_IT_OVR
+    360            *         - SPI_IT_MODF
+    361            *         - SPI_IT_RXNE
+    362            *         - SPI_IT_TXE
+    363            * @retval ITStatus : Indicates the state of the SPI_IT.
+    364            *         This parameter can be any of the @ref ITStatus enumeration.
+    365            */
+    366          ITStatus SPI_GetITStatus(SPI_IT_TypeDef SPI_IT)
+    367          {
+    368            ITStatus pendingbitstatus = RESET;
+    369            uint8_t itpos = 0;
+    370            uint8_t itmask1 = 0;
+    371            uint8_t itmask2 = 0;
+    372            uint8_t enablestatus = 0;
+    373            assert_param(IS_SPI_GET_IT_OK(SPI_IT));
+    374            /* Get the SPI IT index */
+    375            itpos = (uint8_t)((uint8_t)1 << ((uint8_t)SPI_IT & (uint8_t)0x0F));
+    376            
+    377            /* Get the SPI IT mask */
+    378            itmask1 = (uint8_t)((uint8_t)SPI_IT >> (uint8_t)4);
+    379            /* Set the IT mask */
+    380            itmask2 = (uint8_t)((uint8_t)1 << itmask1);
+    381            /* Get the SPI_ITPENDINGBIT enable bit status */
+    382            enablestatus = (uint8_t)((uint8_t)SPI->SR & itmask2);
+    383            /* Check the status of the specified SPI interrupt */
+    384            if (((SPI->ICR & itpos) != RESET) && enablestatus)
+    385            {
+    386              /* SPI_ITPENDINGBIT is set */
+    387              pendingbitstatus = SET;
+    388            }
+    389            else
+    390            {
+    391              /* SPI_ITPENDINGBIT is reset */
+    392              pendingbitstatus = RESET;
+    393            }
+    394            /* Return the SPI_ITPENDINGBIT status */
+    395            return  pendingbitstatus;
+    396          }
+    397          
+    398          /**
+    399            * @brief  Clears the interrupt pending bits.
+    400            * @param  SPI_IT: Specifies the interrupt pending bit to clear.
+    401            *         This parameter can be one of the following values:
+    402            *         - SPI_IT_CRCERR
+    403            *         - SPI_IT_WKUP
+    404            * @note   - OVR (OverRun Error) interrupt pending bit is cleared by software sequence:
+    405            *         a read operation to SPI_DR register (SPI_ReceiveData()) followed by
+    406            *         a read operation to SPI_SR register (SPI_GetITStatus()).
+    407            *         - MODF (Mode Fault) interrupt pending bit is cleared by software sequence:
+    408            *         a read/write operation to SPI_SR register (SPI_GetITStatus()) followed by
+    409            *         a write operation to SPI_CR1 register (SPI_Cmd() to enable the SPI).
+    410            * @retval None
+    411            */
+    412          void SPI_ClearITPendingBit(SPI_IT_TypeDef SPI_IT)
+    413          {
+    414            uint8_t itpos = 0;
+    415            assert_param(IS_SPI_CLEAR_IT_OK(SPI_IT));
+    416            
+    417            /* Clear  SPI_IT_CRCERR or SPI_IT_WKUP interrupt pending bits */
+    418            
+    419            /* Get the SPI pending bit index */
+    420            itpos = (uint8_t)((uint8_t)1 << (uint8_t)((uint8_t)(SPI_IT & (uint8_t)0xF0) >> 4));
+    421            /* Clear the pending bit */
+    422            SPI->SR = (uint8_t)(~itpos);
+    423            
+    424          }
+    425          
+    426          /**
+    427            * @}
+    428            */
+    429            
+    430          /**
+    431            * @}
+    432            */
+    433            
+    434          
+    435          /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+      74  ?_0
+      48  SPI_BiDirectionalLineConfig
+      48  SPI_CalculateCRCCmd
+      42  SPI_ClearFlag
+      59  SPI_ClearITPendingBit
+      48  SPI_Cmd
+      21  SPI_DeInit
+      55  SPI_GetCRC
+       4  SPI_GetCRCPolynomial
+      88  SPI_GetFlagStatus
+     136  SPI_GetITStatus
+     121  SPI_ITConfig
+     330  SPI_Init
+      48  SPI_NSSInternalSoftwareCmd
+       4  SPI_ReceiveData
+      13  SPI_ResetCRC
+       4  SPI_SendData
+       5  SPI_TransmitCRC
+
+ 
+ 1 074 bytes in section .far_func.text
+    74 bytes in section .near.rodata
+ 
+ 1 074 bytes of CODE  memory
+    74 bytes of CONST memory
+
+Errors: none
+Warnings: none

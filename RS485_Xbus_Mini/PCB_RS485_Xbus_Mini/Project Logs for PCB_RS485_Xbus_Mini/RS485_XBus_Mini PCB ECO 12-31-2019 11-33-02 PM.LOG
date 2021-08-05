@@ -1,0 +1,8 @@
+Removed Pin From Net: NetName=GND Pin=J2-1
+Added Pin To Net: NetName=NetC14_1 Pin=J2-1
+Change Net Name : Old Net Name=NetC14_1 New Net Name=GND_IN
+Added Member To Class: ClassName=RS485_Xbus_Mini Member=Component C5 105
+Added Member To Class: ClassName=RS485_Xbus_Mini Member=Component C9 330uF 16v
+Added Member To Class: ClassName=RS485_Xbus_Mini Member=Component C13 330uF 16v
+Added Member To Class: ClassName=RS485_Xbus_Mini Member=Component S3 SW
+Added Room: Name=RS485_Xbus_Mini

@@ -1,0 +1,201 @@
+###############################################################################
+#
+# IAR C/C++ Compiler V3.11.1.207 for STM8                 17/Jan/2020  20:56:10
+# Copyright 2010-2019 IAR Systems AB.
+# PC-locked license - IAR Embedded Workbench for STMicroelectronics STM8
+#
+#    Source file  =  
+#        H:\Project_For_AKS\STM8S\Libraries\STM8S_StdPeriph_Driver\src\stm8s_beep.c
+#    Command line =  
+#        -f C:\Users\chuti\AppData\Local\Temp\EW2220.tmp
+#        (H:\Project_For_AKS\STM8S\Libraries\STM8S_StdPeriph_Driver\src\stm8s_beep.c
+#        -e -On --no_cse --no_unroll --no_inline --no_code_motion --no_tbaa
+#        --no_cross_call --debug --code_model medium --data_model medium -o
+#        H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\STM8S103\Obj
+#        --dlib_config E:\CaiPhanMem\IAR-STM8\stm8\LIB\dlstm8mmn.h -D STM8S003
+#        -lcN H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\STM8S103\List
+#        -I H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\..\ -I
+#        H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\..\..\..\Libraries\STM8S_StdPeriph_Driver\inc\
+#        --vregs 16)
+#    Locale       =  English_USA.1252
+#    List file    =  
+#        H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\STM8S103\List\stm8s_beep.lst
+#    Object file  =  
+#        H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\STM8S103\Obj\stm8s_beep.o
+#
+###############################################################################
+
+H:\Project_For_AKS\STM8S\Libraries\STM8S_StdPeriph_Driver\src\stm8s_beep.c
+      1          /**
+      2            ******************************************************************************
+      3            * @file    stm8s_beep.c
+      4            * @author  MCD Application Team
+      5            * @version V2.2.0
+      6            * @date    30-September-2014
+      7            * @brief   This file contains all the functions for the BEEP peripheral.
+      8             ******************************************************************************
+      9            * @attention
+     10            *
+     11            * <h2><center>&copy; COPYRIGHT 2014 STMicroelectronics</center></h2>
+     12            *
+     13            * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
+     14            * You may not use this file except in compliance with the License.
+     15            * You may obtain a copy of the License at:
+     16            *
+     17            *        http://www.st.com/software_license_agreement_liberty_v2
+     18            *
+     19            * Unless required by applicable law or agreed to in writing, software 
+     20            * distributed under the License is distributed on an "AS IS" BASIS, 
+     21            * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     22            * See the License for the specific language governing permissions and
+     23            * limitations under the License.
+     24            *
+     25            ******************************************************************************
+     26            */
+     27          
+     28          /* Includes ------------------------------------------------------------------*/
+     29          #include "stm8s_beep.h"
+     30          
+     31          /** @addtogroup STM8S_StdPeriph_Driver
+     32            * @{
+     33            */
+     34          /* Private typedef -----------------------------------------------------------*/
+     35          /* Private define ------------------------------------------------------------*/
+     36          /* Private macro -------------------------------------------------------------*/
+     37          /* Private variables ---------------------------------------------------------*/
+     38          /* Private function prototypes -----------------------------------------------*/
+     39          /* Private functions ---------------------------------------------------------*/
+     40          
+     41          /* Public functions ----------------------------------------------------------*/
+     42          
+     43          /**
+     44            * @addtogroup BEEP_Public_Functions
+     45            * @{
+     46            */
+     47          
+     48          /**
+     49            * @brief  Deinitializes the BEEP peripheral registers to their default reset
+     50            * values.
+     51            * @param  None
+     52            * @retval None
+     53            */
+     54          void BEEP_DeInit(void)
+     55          {
+     56            BEEP->CSR = BEEP_CSR_RESET_VALUE;
+     57          }
+     58          
+     59          /**
+     60            * @brief  Initializes the BEEP function according to the specified parameters.
+     61            * @param   BEEP_Frequency Frequency selection.
+     62            * can be one of the values of @ref BEEP_Frequency_TypeDef.
+     63            * @retval None
+     64            * @par Required preconditions:
+     65            * The LS RC calibration must be performed before calling this function.
+     66            */
+     67          void BEEP_Init(BEEP_Frequency_TypeDef BEEP_Frequency)
+     68          {
+     69            /* Check parameter */
+     70            assert_param(IS_BEEP_FREQUENCY_OK(BEEP_Frequency));
+     71            
+     72            /* Set a default calibration value if no calibration is done */
+     73            if ((BEEP->CSR & BEEP_CSR_BEEPDIV) == BEEP_CSR_BEEPDIV)
+     74            {
+     75              BEEP->CSR &= (uint8_t)(~BEEP_CSR_BEEPDIV); /* Clear bits */
+     76              BEEP->CSR |= BEEP_CALIBRATION_DEFAULT;
+     77            }
+     78            
+     79            /* Select the output frequency */
+     80            BEEP->CSR &= (uint8_t)(~BEEP_CSR_BEEPSEL);
+     81            BEEP->CSR |= (uint8_t)(BEEP_Frequency);
+     82          }
+     83          
+     84          /**
+     85            * @brief  Enable or disable the BEEP function.
+     86            * @param   NewState Indicates the new state of the BEEP function.
+     87            * @retval None
+     88            * @par Required preconditions:
+     89            * Initialisation of BEEP and LS RC calibration must be done before.
+     90            */
+     91          void BEEP_Cmd(FunctionalState NewState)
+     92          {
+     93            if (NewState != DISABLE)
+     94            {
+     95              /* Enable the BEEP peripheral */
+     96              BEEP->CSR |= BEEP_CSR_BEEPEN;
+     97            }
+     98            else
+     99            {
+    100              /* Disable the BEEP peripheral */
+    101              BEEP->CSR &= (uint8_t)(~BEEP_CSR_BEEPEN);
+    102            }
+    103          }
+    104          
+    105          /**
+    106            * @brief  Update CSR register with the measured LSI frequency.
+    107            * @par Note on the APR calculation:
+    108            * A is the integer part of LSIFreqkHz/4 and x the decimal part.
+    109            * x <= A/(1+2A) is equivalent to A >= x(1+2A) and also to 4A >= 4x(1+2A) [F1]
+    110            * but we know that A + x = LSIFreqkHz/4 ==> 4x = LSIFreqkHz-4A
+    111            * so [F1] can be written :
+    112            * 4A >= (LSIFreqkHz-4A)(1+2A)
+    113            * @param   LSIFreqHz Low Speed RC frequency measured by timer (in Hz).
+    114            * @retval None
+    115            * @par Required preconditions:
+    116            * - BEEP must be disabled to avoid unwanted interrupts.
+    117            */
+    118          void BEEP_LSICalibrationConfig(uint32_t LSIFreqHz)
+    119          {
+    120            uint16_t lsifreqkhz;
+    121            uint16_t A;
+    122            
+    123            /* Check parameter */
+    124            assert_param(IS_LSI_FREQUENCY_OK(LSIFreqHz));
+    125            
+    126            lsifreqkhz = (uint16_t)(LSIFreqHz / 1000); /* Converts value in kHz */
+    127            
+    128            /* Calculation of BEEPER calibration value */
+    129            
+    130            BEEP->CSR &= (uint8_t)(~BEEP_CSR_BEEPDIV); /* Clear bits */
+    131            
+    132            A = (uint16_t)(lsifreqkhz >> 3U); /* Division by 8, keep integer part only */
+    133            
+    134            if ((8U * A) >= ((lsifreqkhz - (8U * A)) * (1U + (2U * A))))
+    135            {
+    136              BEEP->CSR |= (uint8_t)(A - 2U);
+    137            }
+    138            else
+    139            {
+    140              BEEP->CSR |= (uint8_t)(A - 1U);
+    141            }
+    142          }
+    143          
+    144          /**
+    145            * @}
+    146            */
+    147            
+    148          /**
+    149            * @}
+    150            */
+    151            
+    152          
+    153          /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+      75  ?_0
+      14  BEEP_Cmd
+       5  BEEP_DeInit
+      81  BEEP_Init
+     164  BEEP_LSICalibrationConfig
+
+ 
+ 264 bytes in section .far_func.text
+  75 bytes in section .near.rodata
+ 
+ 264 bytes of CODE  memory
+  75 bytes of CONST memory
+
+Errors: none
+Warnings: none

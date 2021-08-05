@@ -1,0 +1,16 @@
+Removed Pin From Net: NetName=RS485_RX Pin=LED1-2
+Removed Pin From Net: NetName=RS485_TX Pin=LED2-2
+Change Component Footprint: Designator=U2 Old Footprint=TSSOP 20 New Footprint=TSSOP65P440X650-20N
+Change Component Comment : Designator=R1 Old Comment=2k4 New Comment=82k
+Change Component Comment : Designator=R6 Old Comment=2k4 New Comment=82k
+Change Component Comment : Designator=R5 Old Comment=4k7 New Comment=12k
+Change Component Comment : Designator=R7 Old Comment=4k7 New Comment=12k
+Change Component Comment : Designator=R2 Old Comment=10k New Comment=43k
+Change Component Comment : Designator=R8 Old Comment=10k New Comment=43k
+Change Component Comment : Designator=R3 Old Comment=27k New Comment=22k
+Change Component Comment : Designator=R9 Old Comment=27k New Comment=22k
+Change Component Comment : Designator=R4 Old Comment=68k New Comment=12k
+Change Component Comment : Designator=R10 Old Comment=68k New Comment=12k
+Added Pin To Net: NetName=MCU_RX Pin=LED1-2
+Added Pin To Net: NetName=MCU_TX Pin=LED2-2
+Added Room: Name=RS485_Xbus_Mini

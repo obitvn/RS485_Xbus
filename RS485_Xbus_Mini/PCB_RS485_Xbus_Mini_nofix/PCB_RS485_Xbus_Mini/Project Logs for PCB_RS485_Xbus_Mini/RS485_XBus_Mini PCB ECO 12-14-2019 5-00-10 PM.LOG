@@ -1,0 +1,8 @@
+Removed Pin From Net: NetName=RJ45-1 Pin=C11-2
+Removed Pin From Net: NetName=RJ45-2 Pin=R20-1
+Added Pin To Net: NetName=RJ45-2 Pin=C11-1
+Added Pin To Net: NetName=RJ45-1 Pin=R20-2
+Added Pin To Net: NetName=NetC11_2 Pin=C11-2
+Added Pin To Net: NetName=NetC11_2 Pin=R20-1
+Added Net: Name=NetC11_2
+Added Room: Name=RS485_Xbus_Mini

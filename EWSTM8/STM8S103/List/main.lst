@@ -1,0 +1,189 @@
+###############################################################################
+#
+# IAR C/C++ Compiler V3.11.1.207 for STM8                 17/Jan/2020  20:56:10
+# Copyright 2010-2019 IAR Systems AB.
+# PC-locked license - IAR Embedded Workbench for STMicroelectronics STM8
+#
+#    Source file  =  H:\Project_For_AKS\STM8S\Project\RS485_Xbus\main.c
+#    Command line =  
+#        -f C:\Users\chuti\AppData\Local\Temp\EW2038.tmp
+#        (H:\Project_For_AKS\STM8S\Project\RS485_Xbus\main.c -e -On --no_cse
+#        --no_unroll --no_inline --no_code_motion --no_tbaa --no_cross_call
+#        --debug --code_model medium --data_model medium -o
+#        H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\STM8S103\Obj
+#        --dlib_config E:\CaiPhanMem\IAR-STM8\stm8\LIB\dlstm8mmn.h -D STM8S003
+#        -lcN H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\STM8S103\List
+#        -I H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\..\ -I
+#        H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\..\..\..\Libraries\STM8S_StdPeriph_Driver\inc\
+#        --vregs 16)
+#    Locale       =  English_USA.1252
+#    List file    =  
+#        H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\STM8S103\List\main.lst
+#    Object file  =  
+#        H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\STM8S103\Obj\main.o
+#
+###############################################################################
+
+H:\Project_For_AKS\STM8S\Project\RS485_Xbus\main.c
+      1          /***********************************************************************************************************
+      2             ___  _    _ _     _                  
+      3            / _ \| |__(_) |_  | |_ ___ __ _ _ __  
+      4           | (_) | '_ \ |  _| |  _/ -_) _` | '  \ 
+      5            \___/|_.__/_|\__|  \__\___\__,_|_|_|_|
+      6          
+      7          Hanoi, Creartive by UP, 20/7/2019
+      8          Xbus Rs485 
+      9          Using STM8S003F3P6 + Slock AKS
+     10          -------------------------------------------------------------------------------------------------------------------------------------------
+     11          Code by Chu Tien Thinh  
+     12          --------------------------------------------------------------------------------------------------------------------------------------------
+     13          tienthinh.obit@gmail.com
+     14          chutienthinh.bk@gmail.com
+     15          +84981762826
+     16          https://www.facebook.com/thinh.chutien                                   
+     17          https://www.facebook.com/obit.team/
+     18          https://obitvn.wordpress.com/
+     19          ************************************************************************************************************/
+     20          
+     21          
+     22          /* Includes ------------------------------------------------------------------*/
+     23          #include "stm8s.h"
+     24          #include "delay.h"
+     25          #include "uart.h"
+     26          #include "read_switch.h"
+     27          
+     28          uint8_t data_re[32],add_send_485;
+     29          extern uint8_t AddDevice;
+     30          uint8_t alarm_on=0;
+     31          
+     32          static void IWDG_Config(void)
+     33          {
+     34            /* Enable IWDG (the LSI oscillator will be enabled by hardware) */
+     35            IWDG_Enable();
+     36            
+     37            /* IWDG timeout equal to 250 ms (the timeout may varies due to LSI frequency
+     38               dispersion) */
+     39            /* Enable write access to IWDG_PR and IWDG_RLR registers */
+     40            IWDG_WriteAccessCmd(IWDG_WriteAccess_Enable);
+     41            
+     42            /* IWDG counter clock: LSI/128 */
+     43            IWDG_SetPrescaler(IWDG_Prescaler_256);
+     44            
+     45            /* Set counter reload value to obtain 250ms IWDG Timeout.
+     46              Counter Reload Value = 250ms/IWDG counter clock period
+     47                                   = 250ms / (LSI/128)
+     48                                   = 0.25s / (LsiFreq/128)
+     49                                   = LsiFreq/(128 * 4)
+     50                                   = LsiFreq/512
+     51             */
+     52            IWDG_SetReload(255);
+     53            
+     54            /* Reload IWDG counter */
+     55            IWDG_ReloadCounter();
+     56          }
+     57          
+     58          
+     59          /* Private defines -----------------------------------------------------------*/
+     60          /* Private function prototypes -----------------------------------------------*/
+     61          /* Private functions ---------------------------------------------------------*/
+     62          uint16_t value_msb, value_lsb;
+     63          void main(void)
+     64          {
+     65            AddDevice =0xff;
+     66            clk_config_16MHz_hsi();
+     67            delay_using_timer1_init();
+     68            GPIO_Init(GPIOA, GPIO_PIN_2, GPIO_MODE_OUT_PP_HIGH_FAST);
+     69            GPIO_Init(GPIOD, GPIO_PIN_5, GPIO_MODE_OUT_PP_HIGH_FAST);
+     70            GPIO_Init(GPIOD, GPIO_PIN_6, GPIO_MODE_OUT_PP_HIGH_FAST);
+     71            GPIO_WriteLow(GPIOD,GPIO_PIN_6);
+     72            GPIO_WriteLow(GPIOD,GPIO_PIN_5);
+     73            GPIO_WriteLow(GPIOA,GPIO_PIN_2);
+     74            delay_ms(5000);
+     75            GPIO_Init(GPIOD, GPIO_PIN_6, GPIO_MODE_IN_PU_NO_IT);
+     76            GPIO_Init(GPIOC, GPIO_PIN_3, GPIO_MODE_IN_FL_IT);    // SIGNAL INPUT
+     77            EXTI_SetExtIntSensitivity(EXTI_PORT_GPIOC, EXTI_SENSITIVITY_FALL_ONLY); // INIT FOR INTERRUPT SIGN
+     78            UART_Config();
+     79            delay_ms(10000);
+     80            ReadSwitchInit();
+     81            delay_ms(10000);
+     82            AddDevice = AddressBoard();
+     83            if(AddDevice == 0) AddDevice =0xff;
+     84            IWDG_Config();
+     85            enableInterrupts();
+     86            
+     87            /* Infinite loop */
+     88            
+     89            while (1)
+     90            {
+     91              
+     92              IWDG_ReloadCounter(); 
+     93              if(alarm_on)
+     94                  {
+     95                    if(SendPackageToRS485(0x00)) alarm_on=0;
+     96                    else alarm_on=1;
+     97                  }
+     98              GPIO_WriteReverse(GPIOA,GPIO_PIN_2);
+     99              delay_ms(5);
+    100          
+    101              /*
+    102              SendPackageToRS485("12345a54321", sizeof("12345a54321"), 0x76);
+    103              delay_ms(100);
+    104              SendPackageToRS485("right data", sizeof("right data"), 0x75);
+    105              delay_ms(100);
+    106              SendPackageToRS485("test1314", sizeof("test1314"), 0x79);
+    107              delay_ms(100);
+    108              SendPackageToRS485("35@35", sizeof("35@35"), 0x1E);
+    109              delay_ms(100);
+    110              SendPackageToRS485("1312@332e", sizeof("1312@332e"), 0x79);
+    111              delay_ms(100);
+    112              */
+    113            }
+    114            
+    115          }
+    116          
+    117          #ifdef USE_FULL_ASSERT
+    118          
+    119          /**
+    120            * @brief  Reports the name of the source file and the source line number
+    121            *   where the assert_param error has occurred.
+    122            * @param file: pointer to the source file name
+    123            * @param line: assert_param error line source number
+    124            * @retval : None
+    125            */
+    126          void assert_failed(u8* file, u32 line)
+    127          { 
+    128            /* User can add his own implementation to report the file name and line number,
+    129               ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+    130          
+    131            /* Infinite loop */
+    132            while (1)
+    133            {
+    134            }
+    135          }
+    136          #endif
+    137          
+    138          
+    139          /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+      27  IWDG_Config
+       1  add_send_485
+       1  alarm_on
+       2  assert_failed
+      32  data_re
+     232  main
+       2  value_lsb
+       2  value_msb
+
+ 
+ 261 bytes in section .far_func.text
+  38 bytes in section .near.bss
+ 
+ 261 bytes of CODE memory
+  38 bytes of DATA memory
+
+Errors: none
+Warnings: none

@@ -1,0 +1,230 @@
+###############################################################################
+#
+# IAR C/C++ Compiler V3.11.1.207 for STM8                 17/Jan/2020  20:56:10
+# Copyright 2010-2019 IAR Systems AB.
+# PC-locked license - IAR Embedded Workbench for STMicroelectronics STM8
+#
+#    Source file  =  
+#        H:\Project_For_AKS\STM8S\Libraries\STM8S_StdPeriph_Driver\src\stm8s_exti.c
+#    Command line =  
+#        -f C:\Users\chuti\AppData\Local\Temp\EW2232.tmp
+#        (H:\Project_For_AKS\STM8S\Libraries\STM8S_StdPeriph_Driver\src\stm8s_exti.c
+#        -e -On --no_cse --no_unroll --no_inline --no_code_motion --no_tbaa
+#        --no_cross_call --debug --code_model medium --data_model medium -o
+#        H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\STM8S103\Obj
+#        --dlib_config E:\CaiPhanMem\IAR-STM8\stm8\LIB\dlstm8mmn.h -D STM8S003
+#        -lcN H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\STM8S103\List
+#        -I H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\..\ -I
+#        H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\..\..\..\Libraries\STM8S_StdPeriph_Driver\inc\
+#        --vregs 16)
+#    Locale       =  English_USA.1252
+#    List file    =  
+#        H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\STM8S103\List\stm8s_exti.lst
+#    Object file  =  
+#        H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\STM8S103\Obj\stm8s_exti.o
+#
+###############################################################################
+
+H:\Project_For_AKS\STM8S\Libraries\STM8S_StdPeriph_Driver\src\stm8s_exti.c
+      1          /**
+      2            ******************************************************************************
+      3            * @file    stm8s_exti.c
+      4            * @author  MCD Application Team
+      5            * @version V2.2.0
+      6            * @date    30-September-2014
+      7            * @brief   This file contains all the functions for the EXTI peripheral.
+      8             ******************************************************************************
+      9            * @attention
+     10            *
+     11            * <h2><center>&copy; COPYRIGHT 2014 STMicroelectronics</center></h2>
+     12            *
+     13            * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
+     14            * You may not use this file except in compliance with the License.
+     15            * You may obtain a copy of the License at:
+     16            *
+     17            *        http://www.st.com/software_license_agreement_liberty_v2
+     18            *
+     19            * Unless required by applicable law or agreed to in writing, software 
+     20            * distributed under the License is distributed on an "AS IS" BASIS, 
+     21            * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     22            * See the License for the specific language governing permissions and
+     23            * limitations under the License.
+     24            *
+     25            ******************************************************************************
+     26            */
+     27          
+     28          /* Includes ------------------------------------------------------------------*/
+     29          #include "stm8s_exti.h"
+     30          
+     31          /** @addtogroup STM8S_StdPeriph_Driver
+     32            * @{
+     33            */
+     34          /* Private typedef -----------------------------------------------------------*/
+     35          /* Private define ------------------------------------------------------------*/
+     36          /* Private macro -------------------------------------------------------------*/
+     37          /* Private variables ---------------------------------------------------------*/
+     38          /* Private function prototypes -----------------------------------------------*/
+     39          /* Private functions ---------------------------------------------------------*/
+     40          
+     41          /* Public functions ----------------------------------------------------------*/
+     42          
+     43          /**
+     44            * @addtogroup EXTI_Public_Functions
+     45            * @{
+     46            */
+     47          
+     48          /**
+     49            * @brief  Deinitializes the external interrupt control registers to their default reset value.
+     50            * @param  None
+     51            * @retval None
+     52            */
+     53          void EXTI_DeInit(void)
+     54          {
+     55            EXTI->CR1 = EXTI_CR1_RESET_VALUE;
+     56            EXTI->CR2 = EXTI_CR2_RESET_VALUE;
+     57          }
+     58          
+     59          /**
+     60            * @brief  Set the external interrupt sensitivity of the selected port.
+     61            * @warning
+     62            * - The modification of external interrupt sensitivity is only possible when the interrupts are disabled.
+     63            * - The normal behavior is to disable the interrupts before calling this function, and re-enable them after.
+     64            * @param   Port The port number to access.
+     65            * @param   SensitivityValue The external interrupt sensitivity value to set.
+     66            * @retval None
+     67            * @par Required preconditions:
+     68            * Global interrupts must be disabled before calling this function.
+     69            */
+     70          void EXTI_SetExtIntSensitivity(EXTI_Port_TypeDef Port, EXTI_Sensitivity_TypeDef SensitivityValue)
+     71          {
+     72            /* Check function parameters */
+     73            assert_param(IS_EXTI_PORT_OK(Port));
+     74            assert_param(IS_EXTI_SENSITIVITY_OK(SensitivityValue));
+     75            
+     76            /* Set external interrupt sensitivity */
+     77            switch (Port)
+     78            {
+     79            case EXTI_PORT_GPIOA:
+     80              EXTI->CR1 &= (uint8_t)(~EXTI_CR1_PAIS);
+     81              EXTI->CR1 |= (uint8_t)(SensitivityValue);
+     82              break;
+     83            case EXTI_PORT_GPIOB:
+     84              EXTI->CR1 &= (uint8_t)(~EXTI_CR1_PBIS);
+     85              EXTI->CR1 |= (uint8_t)((uint8_t)(SensitivityValue) << 2);
+     86              break;
+     87            case EXTI_PORT_GPIOC:
+     88              EXTI->CR1 &= (uint8_t)(~EXTI_CR1_PCIS);
+     89              EXTI->CR1 |= (uint8_t)((uint8_t)(SensitivityValue) << 4);
+     90              break;
+     91            case EXTI_PORT_GPIOD:
+     92              EXTI->CR1 &= (uint8_t)(~EXTI_CR1_PDIS);
+     93              EXTI->CR1 |= (uint8_t)((uint8_t)(SensitivityValue) << 6);
+     94              break;
+     95            case EXTI_PORT_GPIOE:
+     96              EXTI->CR2 &= (uint8_t)(~EXTI_CR2_PEIS);
+     97              EXTI->CR2 |= (uint8_t)(SensitivityValue);
+     98              break;
+     99            default:
+    100              break;
+    101            }
+    102          }
+    103          
+    104          /**
+    105            * @brief  Set the TLI interrupt sensitivity.
+    106            * @param   SensitivityValue The TLI interrupt sensitivity value.
+    107            * @retval None
+    108            * @par Required preconditions:
+    109            * Global interrupts must be disabled before calling this function.
+    110            */
+    111          void EXTI_SetTLISensitivity(EXTI_TLISensitivity_TypeDef SensitivityValue)
+    112          {
+    113            /* Check function parameters */
+    114            assert_param(IS_EXTI_TLISENSITIVITY_OK(SensitivityValue));
+    115            
+    116            /* Set TLI interrupt sensitivity */
+    117            EXTI->CR2 &= (uint8_t)(~EXTI_CR2_TLIS);
+    118            EXTI->CR2 |= (uint8_t)(SensitivityValue);
+    119          }
+    120          
+    121          /**
+    122            * @brief  Get the external interrupt sensitivity of the selected port.
+    123            * @param   Port The port number to access.
+    124            * @retval EXTI_Sensitivity_TypeDef The external interrupt sensitivity of the selected port.
+    125            */
+    126          EXTI_Sensitivity_TypeDef EXTI_GetExtIntSensitivity(EXTI_Port_TypeDef Port)
+    127          {
+    128            uint8_t value = 0;
+    129            
+    130            /* Check function parameters */
+    131            assert_param(IS_EXTI_PORT_OK(Port));
+    132            
+    133            switch (Port)
+    134            {
+    135            case EXTI_PORT_GPIOA:
+    136              value = (uint8_t)(EXTI->CR1 & EXTI_CR1_PAIS);
+    137              break;
+    138            case EXTI_PORT_GPIOB:
+    139              value = (uint8_t)((uint8_t)(EXTI->CR1 & EXTI_CR1_PBIS) >> 2);
+    140              break;
+    141            case EXTI_PORT_GPIOC:
+    142              value = (uint8_t)((uint8_t)(EXTI->CR1 & EXTI_CR1_PCIS) >> 4);
+    143              break;
+    144            case EXTI_PORT_GPIOD:
+    145              value = (uint8_t)((uint8_t)(EXTI->CR1 & EXTI_CR1_PDIS) >> 6);
+    146              break;
+    147            case EXTI_PORT_GPIOE:
+    148              value = (uint8_t)(EXTI->CR2 & EXTI_CR2_PEIS);
+    149              break;
+    150            default:
+    151              break;
+    152            }
+    153            
+    154            return((EXTI_Sensitivity_TypeDef)value);
+    155          }
+    156          
+    157          /**
+    158            * @brief  Get the TLI interrupt sensitivity.
+    159            * @param  None
+    160            * @retval EXTI_TLISensitivity_TypeDef The TLI interrupt sensitivity read.
+    161            */
+    162          EXTI_TLISensitivity_TypeDef EXTI_GetTLISensitivity(void)
+    163          {
+    164            uint8_t value = 0;
+    165            
+    166            /* Get TLI interrupt sensitivity */
+    167            value = (uint8_t)(EXTI->CR2 & EXTI_CR2_TLIS);
+    168            
+    169            return((EXTI_TLISensitivity_TypeDef)value);
+    170          }
+    171          
+    172          /**
+    173            * @}
+    174            */
+    175            
+    176          /**
+    177            * @}
+    178            */
+    179            
+    180          
+    181          /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+      75  ?_0
+       9  EXTI_DeInit
+     128  EXTI_GetExtIntSensitivity
+      12  EXTI_GetTLISensitivity
+     211  EXTI_SetExtIntSensitivity
+      46  EXTI_SetTLISensitivity
+
+ 
+ 406 bytes in section .far_func.text
+  75 bytes in section .near.rodata
+ 
+ 406 bytes of CODE  memory
+  75 bytes of CONST memory
+
+Errors: none
+Warnings: none

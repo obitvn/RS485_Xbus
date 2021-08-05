@@ -1,0 +1,1384 @@
+###############################################################################
+#
+# IAR C/C++ Compiler V3.11.1.207 for STM8                 17/Jan/2020  20:56:11
+# Copyright 2010-2019 IAR Systems AB.
+# PC-locked license - IAR Embedded Workbench for STMicroelectronics STM8
+#
+#    Source file  =  
+#        H:\Project_For_AKS\STM8S\Libraries\STM8S_StdPeriph_Driver\src\stm8s_tim2.c
+#    Command line =  
+#        -f C:\Users\chuti\AppData\Local\Temp\EW24CC.tmp
+#        (H:\Project_For_AKS\STM8S\Libraries\STM8S_StdPeriph_Driver\src\stm8s_tim2.c
+#        -e -On --no_cse --no_unroll --no_inline --no_code_motion --no_tbaa
+#        --no_cross_call --debug --code_model medium --data_model medium -o
+#        H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\STM8S103\Obj
+#        --dlib_config E:\CaiPhanMem\IAR-STM8\stm8\LIB\dlstm8mmn.h -D STM8S003
+#        -lcN H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\STM8S103\List
+#        -I H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\..\ -I
+#        H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\..\..\..\Libraries\STM8S_StdPeriph_Driver\inc\
+#        --vregs 16)
+#    Locale       =  English_USA.1252
+#    List file    =  
+#        H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\STM8S103\List\stm8s_tim2.lst
+#    Object file  =  
+#        H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\STM8S103\Obj\stm8s_tim2.o
+#
+###############################################################################
+
+H:\Project_For_AKS\STM8S\Libraries\STM8S_StdPeriph_Driver\src\stm8s_tim2.c
+      1          /**
+      2            ******************************************************************************
+      3            * @file    stm8s_tim2.c
+      4            * @author  MCD Application Team
+      5            * @version V2.2.0
+      6            * @date    30-September-2014
+      7            * @brief   This file contains all the functions for the TIM2 peripheral.
+      8             ******************************************************************************
+      9            * @attention
+     10            *
+     11            * <h2><center>&copy; COPYRIGHT 2014 STMicroelectronics</center></h2>
+     12            *
+     13            * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
+     14            * You may not use this file except in compliance with the License.
+     15            * You may obtain a copy of the License at:
+     16            *
+     17            *        http://www.st.com/software_license_agreement_liberty_v2
+     18            *
+     19            * Unless required by applicable law or agreed to in writing, software 
+     20            * distributed under the License is distributed on an "AS IS" BASIS, 
+     21            * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     22            * See the License for the specific language governing permissions and
+     23            * limitations under the License.
+     24            *
+     25            ******************************************************************************
+     26            */
+     27          
+     28          /* Includes ------------------------------------------------------------------*/
+     29          #include "stm8s_tim2.h"
+     30          
+     31          /** @addtogroup STM8S_StdPeriph_Driver
+     32            * @{
+     33            */
+     34          /* Private typedef -----------------------------------------------------------*/
+     35          /* Private define ------------------------------------------------------------*/
+     36          /* Private macro -------------------------------------------------------------*/
+     37          /* Private variables ---------------------------------------------------------*/
+     38          /* Private function prototypes -----------------------------------------------*/
+     39          static void TI1_Config(uint8_t TIM2_ICPolarity, uint8_t TIM2_ICSelection, uint8_t TIM2_ICFilter);
+     40          static void TI2_Config(uint8_t TIM2_ICPolarity, uint8_t TIM2_ICSelection, uint8_t TIM2_ICFilter);
+     41          static void TI3_Config(uint8_t TIM2_ICPolarity, uint8_t TIM2_ICSelection, uint8_t TIM2_ICFilter);
+     42          /**
+     43            * @addtogroup TIM2_Public_Functions
+     44            * @{
+     45            */
+     46          
+     47          /**
+     48            * @brief  Deinitializes the TIM2 peripheral registers to their default reset values.
+     49            * @param  None
+     50            * @retval None
+     51            */
+     52          void TIM2_DeInit(void)
+     53          {
+     54            TIM2->CR1 = (uint8_t)TIM2_CR1_RESET_VALUE;
+     55            TIM2->IER = (uint8_t)TIM2_IER_RESET_VALUE;
+     56            TIM2->SR2 = (uint8_t)TIM2_SR2_RESET_VALUE;
+     57            
+     58            /* Disable channels */
+     59            TIM2->CCER1 = (uint8_t)TIM2_CCER1_RESET_VALUE;
+     60            TIM2->CCER2 = (uint8_t)TIM2_CCER2_RESET_VALUE;
+     61            
+     62            
+     63            /* Then reset channel registers: it also works if lock level is equal to 2 or 3 */
+     64            TIM2->CCER1 = (uint8_t)TIM2_CCER1_RESET_VALUE;
+     65            TIM2->CCER2 = (uint8_t)TIM2_CCER2_RESET_VALUE;
+     66            TIM2->CCMR1 = (uint8_t)TIM2_CCMR1_RESET_VALUE;
+     67            TIM2->CCMR2 = (uint8_t)TIM2_CCMR2_RESET_VALUE;
+     68            TIM2->CCMR3 = (uint8_t)TIM2_CCMR3_RESET_VALUE;
+     69            TIM2->CNTRH = (uint8_t)TIM2_CNTRH_RESET_VALUE;
+     70            TIM2->CNTRL = (uint8_t)TIM2_CNTRL_RESET_VALUE;
+     71            TIM2->PSCR = (uint8_t)TIM2_PSCR_RESET_VALUE;
+     72            TIM2->ARRH  = (uint8_t)TIM2_ARRH_RESET_VALUE;
+     73            TIM2->ARRL  = (uint8_t)TIM2_ARRL_RESET_VALUE;
+     74            TIM2->CCR1H = (uint8_t)TIM2_CCR1H_RESET_VALUE;
+     75            TIM2->CCR1L = (uint8_t)TIM2_CCR1L_RESET_VALUE;
+     76            TIM2->CCR2H = (uint8_t)TIM2_CCR2H_RESET_VALUE;
+     77            TIM2->CCR2L = (uint8_t)TIM2_CCR2L_RESET_VALUE;
+     78            TIM2->CCR3H = (uint8_t)TIM2_CCR3H_RESET_VALUE;
+     79            TIM2->CCR3L = (uint8_t)TIM2_CCR3L_RESET_VALUE;
+     80            TIM2->SR1 = (uint8_t)TIM2_SR1_RESET_VALUE;
+     81          }
+     82          
+     83          /**
+     84            * @brief  Initializes the TIM2 Time Base Unit according to the specified parameters.
+     85            * @param    TIM2_Prescaler specifies the Prescaler from TIM2_Prescaler_TypeDef.
+     86            * @param    TIM2_Period specifies the Period value.
+     87            * @retval None
+     88            */
+     89          void TIM2_TimeBaseInit( TIM2_Prescaler_TypeDef TIM2_Prescaler,
+     90                                  uint16_t TIM2_Period)
+     91          {
+     92            /* Set the Prescaler value */
+     93            TIM2->PSCR = (uint8_t)(TIM2_Prescaler);
+     94            /* Set the Autoreload value */
+     95            TIM2->ARRH = (uint8_t)(TIM2_Period >> 8);
+     96            TIM2->ARRL = (uint8_t)(TIM2_Period);
+     97          }
+     98          
+     99          
+    100          /**
+    101            * @brief  Initializes the TIM2 Channel1 according to the specified parameters.
+    102            * @param   TIM2_OCMode specifies the Output Compare mode  from @ref TIM2_OCMode_TypeDef.
+    103            * @param   TIM2_OutputState specifies the Output State  from @ref TIM2_OutputState_TypeDef.
+    104            * @param   TIM2_Pulse specifies the Pulse width  value.
+    105            * @param   TIM2_OCPolarity specifies the Output Compare Polarity  from @ref TIM2_OCPolarity_TypeDef.
+    106            * @retval None
+    107            */
+    108          void TIM2_OC1Init(TIM2_OCMode_TypeDef TIM2_OCMode,
+    109                            TIM2_OutputState_TypeDef TIM2_OutputState,
+    110                            uint16_t TIM2_Pulse,
+    111                            TIM2_OCPolarity_TypeDef TIM2_OCPolarity)
+    112          {
+    113            /* Check the parameters */
+    114            assert_param(IS_TIM2_OC_MODE_OK(TIM2_OCMode));
+    115            assert_param(IS_TIM2_OUTPUT_STATE_OK(TIM2_OutputState));
+    116            assert_param(IS_TIM2_OC_POLARITY_OK(TIM2_OCPolarity));
+    117            
+    118            /* Disable the Channel 1: Reset the CCE Bit, Set the Output State , the Output Polarity */
+    119            TIM2->CCER1 &= (uint8_t)(~( TIM2_CCER1_CC1E | TIM2_CCER1_CC1P));
+    120            /* Set the Output State &  Set the Output Polarity  */
+    121            TIM2->CCER1 |= (uint8_t)((uint8_t)(TIM2_OutputState & TIM2_CCER1_CC1E ) | 
+    122                                     (uint8_t)(TIM2_OCPolarity & TIM2_CCER1_CC1P));
+    123            
+    124            /* Reset the Output Compare Bits  & Set the Ouput Compare Mode */
+    125            TIM2->CCMR1 = (uint8_t)((uint8_t)(TIM2->CCMR1 & (uint8_t)(~TIM2_CCMR_OCM)) |
+    126                                    (uint8_t)TIM2_OCMode);
+    127            
+    128            /* Set the Pulse value */
+    129            TIM2->CCR1H = (uint8_t)(TIM2_Pulse >> 8);
+    130            TIM2->CCR1L = (uint8_t)(TIM2_Pulse);
+    131          }
+    132          
+    133          
+    134          /**
+    135            * @brief  Initializes the TIM2 Channel2 according to the specified parameters.
+    136            * @param   TIM2_OCMode specifies the Output Compare mode  from @ref TIM2_OCMode_TypeDef.
+    137            * @param   TIM2_OutputState specifies the Output State  from @ref TIM2_OutputState_TypeDef.
+    138            * @param   TIM2_Pulse specifies the Pulse width  value.
+    139            * @param   TIM2_OCPolarity specifies the Output Compare Polarity  from @ref TIM2_OCPolarity_TypeDef.
+    140            * @retval None
+    141            */
+    142          void TIM2_OC2Init(TIM2_OCMode_TypeDef TIM2_OCMode,
+    143                            TIM2_OutputState_TypeDef TIM2_OutputState,
+    144                            uint16_t TIM2_Pulse,
+    145                            TIM2_OCPolarity_TypeDef TIM2_OCPolarity)
+    146          {
+    147            /* Check the parameters */
+    148            assert_param(IS_TIM2_OC_MODE_OK(TIM2_OCMode));
+    149            assert_param(IS_TIM2_OUTPUT_STATE_OK(TIM2_OutputState));
+    150            assert_param(IS_TIM2_OC_POLARITY_OK(TIM2_OCPolarity));
+    151            
+    152            
+    153            /* Disable the Channel 1: Reset the CCE Bit, Set the Output State, the Output Polarity */
+    154            TIM2->CCER1 &= (uint8_t)(~( TIM2_CCER1_CC2E |  TIM2_CCER1_CC2P ));
+    155            /* Set the Output State & Set the Output Polarity */
+    156            TIM2->CCER1 |= (uint8_t)((uint8_t)(TIM2_OutputState  & TIM2_CCER1_CC2E ) |
+    157                                     (uint8_t)(TIM2_OCPolarity & TIM2_CCER1_CC2P));
+    158            
+    159            
+    160            /* Reset the Output Compare Bits & Set the Output Compare Mode */
+    161            TIM2->CCMR2 = (uint8_t)((uint8_t)(TIM2->CCMR2 & (uint8_t)(~TIM2_CCMR_OCM)) | 
+    162                                    (uint8_t)TIM2_OCMode);
+    163            
+    164            
+    165            /* Set the Pulse value */
+    166            TIM2->CCR2H = (uint8_t)(TIM2_Pulse >> 8);
+    167            TIM2->CCR2L = (uint8_t)(TIM2_Pulse);
+    168          }
+    169          
+    170          
+    171          /**
+    172            * @brief  Initializes the TIM2 Channel3 according to the specified parameters.
+    173            * @param   TIM2_OCMode specifies the Output Compare mode from @ref TIM2_OCMode_TypeDef.
+    174            * @param   TIM2_OutputState specifies the Output State from @ref TIM2_OutputState_TypeDef.
+    175            * @param   TIM2_Pulse specifies the Pulse width value.
+    176            * @param   TIM2_OCPolarity specifies the Output Compare Polarity  from @ref TIM2_OCPolarity_TypeDef.
+    177            * @retval None
+    178            */
+    179          void TIM2_OC3Init(TIM2_OCMode_TypeDef TIM2_OCMode,
+    180                            TIM2_OutputState_TypeDef TIM2_OutputState,
+    181                            uint16_t TIM2_Pulse,
+    182                            TIM2_OCPolarity_TypeDef TIM2_OCPolarity)
+    183          {
+    184            /* Check the parameters */
+    185            assert_param(IS_TIM2_OC_MODE_OK(TIM2_OCMode));
+    186            assert_param(IS_TIM2_OUTPUT_STATE_OK(TIM2_OutputState));
+    187            assert_param(IS_TIM2_OC_POLARITY_OK(TIM2_OCPolarity));
+    188            /* Disable the Channel 1: Reset the CCE Bit, Set the Output State, the Output Polarity */
+    189            TIM2->CCER2 &= (uint8_t)(~( TIM2_CCER2_CC3E  | TIM2_CCER2_CC3P));
+    190            /* Set the Output State & Set the Output Polarity */
+    191            TIM2->CCER2 |= (uint8_t)((uint8_t)(TIM2_OutputState & TIM2_CCER2_CC3E) |  
+    192                                     (uint8_t)(TIM2_OCPolarity & TIM2_CCER2_CC3P));
+    193            
+    194            /* Reset the Output Compare Bits & Set the Output Compare Mode */
+    195            TIM2->CCMR3 = (uint8_t)((uint8_t)(TIM2->CCMR3 & (uint8_t)(~TIM2_CCMR_OCM)) |
+    196                                    (uint8_t)TIM2_OCMode);
+    197            
+    198            /* Set the Pulse value */
+    199            TIM2->CCR3H = (uint8_t)(TIM2_Pulse >> 8);
+    200            TIM2->CCR3L = (uint8_t)(TIM2_Pulse);
+    201          }
+    202          
+    203          /**
+    204            * @brief  Initializes the TIM2 peripheral according to the specified parameters.
+    205            * @param    TIM2_Channel specifies the Input Capture Channel from @ref TIM2_Channel_TypeDef.
+    206            * @param   TIM2_ICPolarity specifies the Input Capture Polarity from @ref TIM2_ICPolarity_TypeDef.
+    207            * @param   TIM2_ICSelection specifies the Input Capture Selection from @ref TIM2_ICSelection_TypeDef.
+    208            * @param   TIM2_ICPrescaler specifies the Input Capture Prescaler from @ref TIM2_ICPSC_TypeDef.
+    209            * @param   TIM2_ICFilter specifies the Input Capture Filter value (value can be an integer from 0x00 to 0x0F).
+    210            * @retval None
+    211            */
+    212          void TIM2_ICInit(TIM2_Channel_TypeDef TIM2_Channel,
+    213                           TIM2_ICPolarity_TypeDef TIM2_ICPolarity,
+    214                           TIM2_ICSelection_TypeDef TIM2_ICSelection,
+    215                           TIM2_ICPSC_TypeDef TIM2_ICPrescaler,
+    216                           uint8_t TIM2_ICFilter)
+    217          {
+    218            /* Check the parameters */
+    219            assert_param(IS_TIM2_CHANNEL_OK(TIM2_Channel));
+    220            assert_param(IS_TIM2_IC_POLARITY_OK(TIM2_ICPolarity));
+    221            assert_param(IS_TIM2_IC_SELECTION_OK(TIM2_ICSelection));
+    222            assert_param(IS_TIM2_IC_PRESCALER_OK(TIM2_ICPrescaler));
+    223            assert_param(IS_TIM2_IC_FILTER_OK(TIM2_ICFilter));
+    224            
+    225            if (TIM2_Channel == TIM2_CHANNEL_1)
+    226            {
+    227              /* TI1 Configuration */
+    228              TI1_Config((uint8_t)TIM2_ICPolarity,
+    229                         (uint8_t)TIM2_ICSelection,
+    230                         (uint8_t)TIM2_ICFilter);
+    231              
+    232              /* Set the Input Capture Prescaler value */
+    233              TIM2_SetIC1Prescaler(TIM2_ICPrescaler);
+    234            }
+    235            else if (TIM2_Channel == TIM2_CHANNEL_2)
+    236            {
+    237              /* TI2 Configuration */
+    238              TI2_Config((uint8_t)TIM2_ICPolarity,
+    239                         (uint8_t)TIM2_ICSelection,
+    240                         (uint8_t)TIM2_ICFilter);
+    241              
+    242              /* Set the Input Capture Prescaler value */
+    243              TIM2_SetIC2Prescaler(TIM2_ICPrescaler);
+    244            }
+    245            else
+    246            {
+    247              /* TI3 Configuration */
+    248              TI3_Config((uint8_t)TIM2_ICPolarity,
+    249                         (uint8_t)TIM2_ICSelection,
+    250                         (uint8_t)TIM2_ICFilter);
+    251              
+    252              /* Set the Input Capture Prescaler value */
+    253              TIM2_SetIC3Prescaler(TIM2_ICPrescaler);
+    254            }
+    255          }
+    256          
+    257          /**
+    258            * @brief  Configures the TIM2 peripheral in PWM Input Mode according to the specified parameters.
+    259              * @param    TIM2_Channel specifies the Input Capture Channel from @ref TIM2_Channel_TypeDef.
+    260            * @param   TIM2_ICPolarity specifies the Input Capture Polarity from @ref TIM2_ICPolarity_TypeDef.
+    261            * @param   TIM2_ICSelection specifies the Input Capture Selection from @ref TIM2_ICSelection_TypeDef.
+    262            * @param   TIM2_ICPrescaler specifies the Input Capture Prescaler from @ref TIM2_ICPSC_TypeDef.
+    263            * @param   TIM2_ICFilter specifies the Input Capture Filter value (value can be an integer from 0x00 to 0x0F).
+    264            * @retval None
+    265            */
+    266          void TIM2_PWMIConfig(TIM2_Channel_TypeDef TIM2_Channel,
+    267                               TIM2_ICPolarity_TypeDef TIM2_ICPolarity,
+    268                               TIM2_ICSelection_TypeDef TIM2_ICSelection,
+    269                               TIM2_ICPSC_TypeDef TIM2_ICPrescaler,
+    270                               uint8_t TIM2_ICFilter)
+    271          {
+    272            uint8_t icpolarity = (uint8_t)TIM2_ICPOLARITY_RISING;
+    273            uint8_t icselection = (uint8_t)TIM2_ICSELECTION_DIRECTTI;
+    274            
+    275            /* Check the parameters */
+    276            assert_param(IS_TIM2_PWMI_CHANNEL_OK(TIM2_Channel));
+    277            assert_param(IS_TIM2_IC_POLARITY_OK(TIM2_ICPolarity));
+    278            assert_param(IS_TIM2_IC_SELECTION_OK(TIM2_ICSelection));
+    279            assert_param(IS_TIM2_IC_PRESCALER_OK(TIM2_ICPrescaler));
+    280            
+    281            /* Select the Opposite Input Polarity */
+    282            if (TIM2_ICPolarity != TIM2_ICPOLARITY_FALLING)
+    283            {
+    284              icpolarity = (uint8_t)TIM2_ICPOLARITY_FALLING;
+    285            }
+    286            else
+    287            {
+    288              icpolarity = (uint8_t)TIM2_ICPOLARITY_RISING;
+    289            }
+    290            
+    291            /* Select the Opposite Input */
+    292            if (TIM2_ICSelection == TIM2_ICSELECTION_DIRECTTI)
+    293            {
+    294              icselection = (uint8_t)TIM2_ICSELECTION_INDIRECTTI;
+    295            }
+    296            else
+    297            {
+    298              icselection = (uint8_t)TIM2_ICSELECTION_DIRECTTI;
+    299            }
+    300            
+    301            if (TIM2_Channel == TIM2_CHANNEL_1)
+    302            {
+    303              /* TI1 Configuration */
+    304              TI1_Config((uint8_t)TIM2_ICPolarity, (uint8_t)TIM2_ICSelection,
+    305                         (uint8_t)TIM2_ICFilter);
+    306              
+    307              /* Set the Input Capture Prescaler value */
+    308              TIM2_SetIC1Prescaler(TIM2_ICPrescaler);
+    309              
+    310              /* TI2 Configuration */
+    311              TI2_Config(icpolarity, icselection, TIM2_ICFilter);
+    312              
+    313              /* Set the Input Capture Prescaler value */
+    314              TIM2_SetIC2Prescaler(TIM2_ICPrescaler);
+    315            }
+    316            else
+    317            {
+    318              /* TI2 Configuration */
+    319              TI2_Config((uint8_t)TIM2_ICPolarity, (uint8_t)TIM2_ICSelection,
+    320                         (uint8_t)TIM2_ICFilter);
+    321              
+    322              /* Set the Input Capture Prescaler value */
+    323              TIM2_SetIC2Prescaler(TIM2_ICPrescaler);
+    324              
+    325              /* TI1 Configuration */
+    326              TI1_Config((uint8_t)icpolarity, icselection, (uint8_t)TIM2_ICFilter);
+    327              
+    328              /* Set the Input Capture Prescaler value */
+    329              TIM2_SetIC1Prescaler(TIM2_ICPrescaler);
+    330            }
+    331          }
+    332          
+    333          /**
+    334            * @brief  Enables or disables the TIM2 peripheral.
+    335            * @param   NewState new state of the TIM2 peripheral. This parameter can
+    336            * be ENABLE or DISABLE.
+    337            * @retval None
+    338            */
+    339          void TIM2_Cmd(FunctionalState NewState)
+    340          {
+    341            /* Check the parameters */
+    342            assert_param(IS_FUNCTIONALSTATE_OK(NewState));
+    343            
+    344            /* set or Reset the CEN Bit */
+    345            if (NewState != DISABLE)
+    346            {
+    347              TIM2->CR1 |= (uint8_t)TIM2_CR1_CEN;
+    348            }
+    349            else
+    350            {
+    351              TIM2->CR1 &= (uint8_t)(~TIM2_CR1_CEN);
+    352            }
+    353          }
+    354          
+    355          /**
+    356            * @brief  Enables or disables the specified TIM2 interrupts.
+    357            * @param   NewState new state of the TIM2 peripheral.
+    358            * This parameter can be: ENABLE or DISABLE.
+    359            * @param   TIM2_IT specifies the TIM2 interrupts sources to be enabled or disabled.
+    360            * This parameter can be any combination of the following values:
+    361            *                       - TIM2_IT_UPDATE: TIM2 update Interrupt source
+    362            *                       - TIM2_IT_CC1: TIM2 Capture Compare 1 Interrupt source
+    363            *                       - TIM2_IT_CC2: TIM2 Capture Compare 2 Interrupt source
+    364            *                       - TIM2_IT_CC3: TIM2 Capture Compare 3 Interrupt source
+    365            * @param   NewState new state of the TIM2 peripheral.
+    366            * @retval None
+    367            */
+    368          void TIM2_ITConfig(TIM2_IT_TypeDef TIM2_IT, FunctionalState NewState)
+    369          {
+    370            /* Check the parameters */
+    371            assert_param(IS_TIM2_IT_OK(TIM2_IT));
+    372            assert_param(IS_FUNCTIONALSTATE_OK(NewState));
+    373            
+    374            if (NewState != DISABLE)
+    375            {
+    376              /* Enable the Interrupt sources */
+    377              TIM2->IER |= (uint8_t)TIM2_IT;
+    378            }
+    379            else
+    380            {
+    381              /* Disable the Interrupt sources */
+    382              TIM2->IER &= (uint8_t)(~TIM2_IT);
+    383            }
+    384          }
+    385          
+    386          /**
+    387            * @brief  Enables or Disables the TIM2 Update event.
+    388            * @param   NewState new state of the TIM2 peripheral Preload register. This parameter can
+    389            * be ENABLE or DISABLE.
+    390            * @retval None
+    391            */
+    392          void TIM2_UpdateDisableConfig(FunctionalState NewState)
+    393          {
+    394            /* Check the parameters */
+    395            assert_param(IS_FUNCTIONALSTATE_OK(NewState));
+    396            
+    397            /* Set or Reset the UDIS Bit */
+    398            if (NewState != DISABLE)
+    399            {
+    400              TIM2->CR1 |= (uint8_t)TIM2_CR1_UDIS;
+    401            }
+    402            else
+    403            {
+    404              TIM2->CR1 &= (uint8_t)(~TIM2_CR1_UDIS);
+    405            }
+    406          }
+    407          
+    408          /**
+    409            * @brief  Selects the TIM2 Update Request Interrupt source.
+    410            * @param   TIM2_UpdateSource specifies the Update source.
+    411            * This parameter can be one of the following values
+    412            *                       - TIM2_UPDATESOURCE_REGULAR
+    413            *                       - TIM2_UPDATESOURCE_GLOBAL
+    414            * @retval None
+    415            */
+    416          void TIM2_UpdateRequestConfig(TIM2_UpdateSource_TypeDef TIM2_UpdateSource)
+    417          {
+    418            /* Check the parameters */
+    419            assert_param(IS_TIM2_UPDATE_SOURCE_OK(TIM2_UpdateSource));
+    420            
+    421            /* Set or Reset the URS Bit */
+    422            if (TIM2_UpdateSource != TIM2_UPDATESOURCE_GLOBAL)
+    423            {
+    424              TIM2->CR1 |= (uint8_t)TIM2_CR1_URS;
+    425            }
+    426            else
+    427            {
+    428              TIM2->CR1 &= (uint8_t)(~TIM2_CR1_URS);
+    429            }
+    430          }
+    431          
+    432          /**
+    433            * @brief  Selects the TIM2’s One Pulse Mode.
+    434            * @param   TIM2_OPMode specifies the OPM Mode to be used.
+    435            * This parameter can be one of the following values
+    436            *                    - TIM2_OPMODE_SINGLE
+    437            *                    - TIM2_OPMODE_REPETITIVE
+    438            * @retval None
+    439            */
+    440          void TIM2_SelectOnePulseMode(TIM2_OPMode_TypeDef TIM2_OPMode)
+    441          {
+    442            /* Check the parameters */
+    443            assert_param(IS_TIM2_OPM_MODE_OK(TIM2_OPMode));
+    444            
+    445            /* Set or Reset the OPM Bit */
+    446            if (TIM2_OPMode != TIM2_OPMODE_REPETITIVE)
+    447            {
+    448              TIM2->CR1 |= (uint8_t)TIM2_CR1_OPM;
+    449            }
+    450            else
+    451            {
+    452              TIM2->CR1 &= (uint8_t)(~TIM2_CR1_OPM);
+    453            }
+    454          }
+    455          
+    456          /**
+    457            * @brief  Configures the TIM2 Prescaler.
+    458            * @param   Prescaler specifies the Prescaler Register value
+    459            * This parameter can be one of the following values
+    460            *                       -  TIM2_PRESCALER_1
+    461            *                       -  TIM2_PRESCALER_2
+    462            *                       -  TIM2_PRESCALER_4
+    463            *                       -  TIM2_PRESCALER_8
+    464            *                       -  TIM2_PRESCALER_16
+    465            *                       -  TIM2_PRESCALER_32
+    466            *                       -  TIM2_PRESCALER_64
+    467            *                       -  TIM2_PRESCALER_128
+    468            *                       -  TIM2_PRESCALER_256
+    469            *                       -  TIM2_PRESCALER_512
+    470            *                       -  TIM2_PRESCALER_1024
+    471            *                       -  TIM2_PRESCALER_2048
+    472            *                       -  TIM2_PRESCALER_4096
+    473            *                       -  TIM2_PRESCALER_8192
+    474            *                       -  TIM2_PRESCALER_16384
+    475            *                       -  TIM2_PRESCALER_32768
+    476            * @param   TIM2_PSCReloadMode specifies the TIM2 Prescaler Reload mode.
+    477            * This parameter can be one of the following values
+    478            *                       - TIM2_PSCRELOADMODE_IMMEDIATE: The Prescaler is loaded
+    479            *                         immediately.
+    480            *                       - TIM2_PSCRELOADMODE_UPDATE: The Prescaler is loaded at
+    481            *                         the update event.
+    482            * @retval None
+    483            */
+    484          void TIM2_PrescalerConfig(TIM2_Prescaler_TypeDef Prescaler,
+    485                                    TIM2_PSCReloadMode_TypeDef TIM2_PSCReloadMode)
+    486          {
+    487            /* Check the parameters */
+    488            assert_param(IS_TIM2_PRESCALER_RELOAD_OK(TIM2_PSCReloadMode));
+    489            assert_param(IS_TIM2_PRESCALER_OK(Prescaler));
+    490            
+    491            /* Set the Prescaler value */
+    492            TIM2->PSCR = (uint8_t)Prescaler;
+    493            
+    494            /* Set or reset the UG Bit */
+    495            TIM2->EGR = (uint8_t)TIM2_PSCReloadMode;
+    496          }
+    497          
+    498          /**
+    499            * @brief  Forces the TIM2 Channel1 output waveform to active or inactive level.
+    500            * @param   TIM2_ForcedAction specifies the forced Action to be set to the output waveform.
+    501            * This parameter can be one of the following values:
+    502            *                       - TIM2_FORCEDACTION_ACTIVE: Force active level on OC1REF
+    503            *                       - TIM2_FORCEDACTION_INACTIVE: Force inactive level on
+    504            *                         OC1REF.
+    505            * @retval None
+    506            */
+    507          void TIM2_ForcedOC1Config(TIM2_ForcedAction_TypeDef TIM2_ForcedAction)
+    508          {
+    509            /* Check the parameters */
+    510            assert_param(IS_TIM2_FORCED_ACTION_OK(TIM2_ForcedAction));
+    511            
+    512            /* Reset the OCM Bits & Configure the Forced output Mode */
+    513            TIM2->CCMR1  =  (uint8_t)((uint8_t)(TIM2->CCMR1 & (uint8_t)(~TIM2_CCMR_OCM))  
+    514                                      | (uint8_t)TIM2_ForcedAction);
+    515          }
+    516          
+    517          /**
+    518            * @brief  Forces the TIM2 Channel2 output waveform to active or inactive level.
+    519            * @param   TIM2_ForcedAction specifies the forced Action to be set to the output waveform.
+    520            * This parameter can be one of the following values:
+    521            *                       - TIM2_FORCEDACTION_ACTIVE: Force active level on OC2REF
+    522            *                       - TIM2_FORCEDACTION_INACTIVE: Force inactive level on
+    523            *                         OC2REF.
+    524            * @retval None
+    525            */
+    526          void TIM2_ForcedOC2Config(TIM2_ForcedAction_TypeDef TIM2_ForcedAction)
+    527          {
+    528            /* Check the parameters */
+    529            assert_param(IS_TIM2_FORCED_ACTION_OK(TIM2_ForcedAction));
+    530            
+    531            /* Reset the OCM Bits & Configure the Forced output Mode */
+    532            TIM2->CCMR2 = (uint8_t)((uint8_t)(TIM2->CCMR2 & (uint8_t)(~TIM2_CCMR_OCM))  
+    533                                    | (uint8_t)TIM2_ForcedAction);
+    534          }
+    535          
+    536          /**
+    537            * @brief  Forces the TIM2 Channel3 output waveform to active or inactive level.
+    538            * @param   TIM2_ForcedAction specifies the forced Action to be set to the output waveform.
+    539            * This parameter can be one of the following values:
+    540            *                       - TIM2_FORCEDACTION_ACTIVE: Force active level on OC3REF
+    541            *                       - TIM2_FORCEDACTION_INACTIVE: Force inactive level on
+    542            *                         OC3REF.
+    543            * @retval None
+    544            */
+    545          void TIM2_ForcedOC3Config(TIM2_ForcedAction_TypeDef TIM2_ForcedAction)
+    546          {
+    547            /* Check the parameters */
+    548            assert_param(IS_TIM2_FORCED_ACTION_OK(TIM2_ForcedAction));
+    549            
+    550            /* Reset the OCM Bits & Configure the Forced output Mode */
+    551            TIM2->CCMR3  =  (uint8_t)((uint8_t)(TIM2->CCMR3 & (uint8_t)(~TIM2_CCMR_OCM))
+    552                                      | (uint8_t)TIM2_ForcedAction);
+    553          }
+    554          
+    555          /**
+    556            * @brief  Enables or disables TIM2 peripheral Preload register on ARR.
+    557            * @param   NewState new state of the TIM2 peripheral Preload register.
+    558            * This parameter can be ENABLE or DISABLE.
+    559            * @retval None
+    560            */
+    561          void TIM2_ARRPreloadConfig(FunctionalState NewState)
+    562          {
+    563            /* Check the parameters */
+    564            assert_param(IS_FUNCTIONALSTATE_OK(NewState));
+    565            
+    566            /* Set or Reset the ARPE Bit */
+    567            if (NewState != DISABLE)
+    568            {
+    569              TIM2->CR1 |= (uint8_t)TIM2_CR1_ARPE;
+    570            }
+    571            else
+    572            {
+    573              TIM2->CR1 &= (uint8_t)(~TIM2_CR1_ARPE);
+    574            }
+    575          }
+    576          
+    577          /**
+    578            * @brief  Enables or disables the TIM2 peripheral Preload Register on CCR1.
+    579            * @param   NewState new state of the Capture Compare Preload register.
+    580            * This parameter can be ENABLE or DISABLE.
+    581            * @retval None
+    582            */
+    583          void TIM2_OC1PreloadConfig(FunctionalState NewState)
+    584          {
+    585            /* Check the parameters */
+    586            assert_param(IS_FUNCTIONALSTATE_OK(NewState));
+    587            
+    588            /* Set or Reset the OC1PE Bit */
+    589            if (NewState != DISABLE)
+    590            {
+    591              TIM2->CCMR1 |= (uint8_t)TIM2_CCMR_OCxPE;
+    592            }
+    593            else
+    594            {
+    595              TIM2->CCMR1 &= (uint8_t)(~TIM2_CCMR_OCxPE);
+    596            }
+    597          }
+    598          
+    599          /**
+    600            * @brief  Enables or disables the TIM2 peripheral Preload Register on CCR2.
+    601            * @param   NewState new state of the Capture Compare Preload register.
+    602            * This parameter can be ENABLE or DISABLE.
+    603            * @retval None
+    604            */
+    605          void TIM2_OC2PreloadConfig(FunctionalState NewState)
+    606          {
+    607            /* Check the parameters */
+    608            assert_param(IS_FUNCTIONALSTATE_OK(NewState));
+    609            
+    610            /* Set or Reset the OC2PE Bit */
+    611            if (NewState != DISABLE)
+    612            {
+    613              TIM2->CCMR2 |= (uint8_t)TIM2_CCMR_OCxPE;
+    614            }
+    615            else
+    616            {
+    617              TIM2->CCMR2 &= (uint8_t)(~TIM2_CCMR_OCxPE);
+    618            }
+    619          }
+    620          
+    621          /**
+    622            * @brief  Enables or disables the TIM2 peripheral Preload Register on CCR3.
+    623            * @param   NewState new state of the Capture Compare Preload register.
+    624            * This parameter can be ENABLE or DISABLE.
+    625            * @retval None
+    626            */
+    627          void TIM2_OC3PreloadConfig(FunctionalState NewState)
+    628          {
+    629            /* Check the parameters */
+    630            assert_param(IS_FUNCTIONALSTATE_OK(NewState));
+    631            
+    632            /* Set or Reset the OC3PE Bit */
+    633            if (NewState != DISABLE)
+    634            {
+    635              TIM2->CCMR3 |= (uint8_t)TIM2_CCMR_OCxPE;
+    636            }
+    637            else
+    638            {
+    639              TIM2->CCMR3 &= (uint8_t)(~TIM2_CCMR_OCxPE);
+    640            }
+    641          }
+    642          
+    643          /**
+    644            * @brief  Configures the TIM2 event to be generated by software.
+    645            * @param   TIM2_EventSource specifies the event source.
+    646            * This parameter can be one of the following values:
+    647            *                       - TIM2_EVENTSOURCE_UPDATE: TIM2 update Event source
+    648            *                       - TIM2_EVENTSOURCE_CC1: TIM2 Capture Compare 1 Event source
+    649            *                       - TIM2_EVENTSOURCE_CC2: TIM2 Capture Compare 2 Event source
+    650            *                       - TIM2_EVENTSOURCE_CC3: TIM2 Capture Compare 3 Event source
+    651            * @retval None
+    652            */
+    653          void TIM2_GenerateEvent(TIM2_EventSource_TypeDef TIM2_EventSource)
+    654          {
+    655            /* Check the parameters */
+    656            assert_param(IS_TIM2_EVENT_SOURCE_OK(TIM2_EventSource));
+    657            
+    658            /* Set the event sources */
+    659            TIM2->EGR = (uint8_t)TIM2_EventSource;
+    660          }
+    661          
+    662          /**
+    663            * @brief  Configures the TIM2 Channel 1 polarity.
+    664            * @param   TIM2_OCPolarity specifies the OC1 Polarity.
+    665            * This parameter can be one of the following values:
+    666            *                       - TIM2_OCPOLARITY_LOW: Output Compare active low
+    667            *                       - TIM2_OCPOLARITY_HIGH: Output Compare active high
+    668            * @retval None
+    669            */
+    670          void TIM2_OC1PolarityConfig(TIM2_OCPolarity_TypeDef TIM2_OCPolarity)
+    671          {
+    672            /* Check the parameters */
+    673            assert_param(IS_TIM2_OC_POLARITY_OK(TIM2_OCPolarity));
+    674            
+    675            /* Set or Reset the CC1P Bit */
+    676            if (TIM2_OCPolarity != TIM2_OCPOLARITY_HIGH)
+    677            {
+    678              TIM2->CCER1 |= (uint8_t)TIM2_CCER1_CC1P;
+    679            }
+    680            else
+    681            {
+    682              TIM2->CCER1 &= (uint8_t)(~TIM2_CCER1_CC1P);
+    683            }
+    684          }
+    685          
+    686          /**
+    687            * @brief  Configures the TIM2 Channel 2 polarity.
+    688            * @param   TIM2_OCPolarity specifies the OC2 Polarity.
+    689            * This parameter can be one of the following values:
+    690            *                       - TIM2_OCPOLARITY_LOW: Output Compare active low
+    691            *                       - TIM2_OCPOLARITY_HIGH: Output Compare active high
+    692            * @retval None
+    693            */
+    694          void TIM2_OC2PolarityConfig(TIM2_OCPolarity_TypeDef TIM2_OCPolarity)
+    695          {
+    696            /* Check the parameters */
+    697            assert_param(IS_TIM2_OC_POLARITY_OK(TIM2_OCPolarity));
+    698            
+    699            /* Set or Reset the CC2P Bit */
+    700            if (TIM2_OCPolarity != TIM2_OCPOLARITY_HIGH)
+    701            {
+    702              TIM2->CCER1 |= TIM2_CCER1_CC2P;
+    703            }
+    704            else
+    705            {
+    706              TIM2->CCER1 &= (uint8_t)(~TIM2_CCER1_CC2P);
+    707            }
+    708          }
+    709          
+    710          /**
+    711            * @brief  Configures the TIM2 Channel 3 polarity.
+    712            * @param   TIM2_OCPolarity specifies the OC3 Polarity.
+    713            * This parameter can be one of the following values:
+    714            *                       - TIM2_OCPOLARITY_LOW: Output Compare active low
+    715            *                       - TIM2_OCPOLARITY_HIGH: Output Compare active high
+    716            * @retval None
+    717            */
+    718          void TIM2_OC3PolarityConfig(TIM2_OCPolarity_TypeDef TIM2_OCPolarity)
+    719          {
+    720            /* Check the parameters */
+    721            assert_param(IS_TIM2_OC_POLARITY_OK(TIM2_OCPolarity));
+    722            
+    723            /* Set or Reset the CC3P Bit */
+    724            if (TIM2_OCPolarity != TIM2_OCPOLARITY_HIGH)
+    725            {
+    726              TIM2->CCER2 |= (uint8_t)TIM2_CCER2_CC3P;
+    727            }
+    728            else
+    729            {
+    730              TIM2->CCER2 &= (uint8_t)(~TIM2_CCER2_CC3P);
+    731            }
+    732          }
+    733          
+    734          /**
+    735            * @brief  Enables or disables the TIM2 Capture Compare Channel x.
+    736            * @param   TIM2_Channel specifies the TIM2 Channel.
+    737            * This parameter can be one of the following values:
+    738            *                       - TIM2_CHANNEL_1: TIM2 Channel1
+    739            *                       - TIM2_CHANNEL_2: TIM2 Channel2
+    740            *                       - TIM2_CHANNEL_3: TIM2 Channel3
+    741            * @param   NewState specifies the TIM2 Channel CCxE bit new state.
+    742            * This parameter can be: ENABLE or DISABLE.
+    743            * @retval None
+    744            */
+    745          void TIM2_CCxCmd(TIM2_Channel_TypeDef TIM2_Channel, FunctionalState NewState)
+    746          {
+    747            /* Check the parameters */
+    748            assert_param(IS_TIM2_CHANNEL_OK(TIM2_Channel));
+    749            assert_param(IS_FUNCTIONALSTATE_OK(NewState));
+    750            
+    751            if (TIM2_Channel == TIM2_CHANNEL_1)
+    752            {
+    753              /* Set or Reset the CC1E Bit */
+    754              if (NewState != DISABLE)
+    755              {
+    756                TIM2->CCER1 |= (uint8_t)TIM2_CCER1_CC1E;
+    757              }
+    758              else
+    759              {
+    760                TIM2->CCER1 &= (uint8_t)(~TIM2_CCER1_CC1E);
+    761              }
+    762              
+    763            }
+    764            else if (TIM2_Channel == TIM2_CHANNEL_2)
+    765            {
+    766              /* Set or Reset the CC2E Bit */
+    767              if (NewState != DISABLE)
+    768              {
+    769                TIM2->CCER1 |= (uint8_t)TIM2_CCER1_CC2E;
+    770              }
+    771              else
+    772              {
+    773                TIM2->CCER1 &= (uint8_t)(~TIM2_CCER1_CC2E);
+    774              }
+    775            }
+    776            else
+    777            {
+    778              /* Set or Reset the CC3E Bit */
+    779              if (NewState != DISABLE)
+    780              {
+    781                TIM2->CCER2 |= (uint8_t)TIM2_CCER2_CC3E;
+    782              }
+    783              else
+    784              {
+    785                TIM2->CCER2 &= (uint8_t)(~TIM2_CCER2_CC3E);
+    786              }
+    787            }
+    788          }
+    789          
+    790          /**
+    791            * @brief  Selects the TIM2 Output Compare Mode. This function disables the
+    792            * selected channel before changing the Output Compare Mode. User has to
+    793            * enable this channel using TIM2_CCxCmd and TIM2_CCxNCmd functions.
+    794            * @param   TIM2_Channel specifies the TIM2 Channel.
+    795            * This parameter can be one of the following values:
+    796            *                       - TIM2_CHANNEL_1: TIM2 Channel1
+    797            *                       - TIM2_CHANNEL_2: TIM2 Channel2
+    798            *                       - TIM2_CHANNEL_3: TIM2 Channel3
+    799            * @param   TIM2_OCMode specifies the TIM2 Output Compare Mode.
+    800            * This parameter can be one of the following values:
+    801            *                       - TIM2_OCMODE_TIMING
+    802            *                       - TIM2_OCMODE_ACTIVE
+    803            *                       - TIM2_OCMODE_TOGGLE
+    804            *                       - TIM2_OCMODE_PWM1
+    805            *                       - TIM2_OCMODE_PWM2
+    806            *                       - TIM2_FORCEDACTION_ACTIVE
+    807            *                       - TIM2_FORCEDACTION_INACTIVE
+    808            * @retval None
+    809            */
+    810          void TIM2_SelectOCxM(TIM2_Channel_TypeDef TIM2_Channel, TIM2_OCMode_TypeDef TIM2_OCMode)
+    811          {
+    812            /* Check the parameters */
+    813            assert_param(IS_TIM2_CHANNEL_OK(TIM2_Channel));
+    814            assert_param(IS_TIM2_OCM_OK(TIM2_OCMode));
+    815            
+    816            if (TIM2_Channel == TIM2_CHANNEL_1)
+    817            {
+    818              /* Disable the Channel 1: Reset the CCE Bit */
+    819              TIM2->CCER1 &= (uint8_t)(~TIM2_CCER1_CC1E);
+    820              
+    821              /* Reset the Output Compare Bits & Set the Output Compare Mode */
+    822              TIM2->CCMR1 = (uint8_t)((uint8_t)(TIM2->CCMR1 & (uint8_t)(~TIM2_CCMR_OCM))
+    823                                      | (uint8_t)TIM2_OCMode);
+    824            }
+    825            else if (TIM2_Channel == TIM2_CHANNEL_2)
+    826            {
+    827              /* Disable the Channel 2: Reset the CCE Bit */
+    828              TIM2->CCER1 &= (uint8_t)(~TIM2_CCER1_CC2E);
+    829              
+    830              /* Reset the Output Compare Bits & Set the Output Compare Mode */
+    831              TIM2->CCMR2 = (uint8_t)((uint8_t)(TIM2->CCMR2 & (uint8_t)(~TIM2_CCMR_OCM))
+    832                                      | (uint8_t)TIM2_OCMode);
+    833            }
+    834            else
+    835            {
+    836              /* Disable the Channel 3: Reset the CCE Bit */
+    837              TIM2->CCER2 &= (uint8_t)(~TIM2_CCER2_CC3E);
+    838              
+    839              /* Reset the Output Compare Bits & Set the Output Compare Mode */
+    840              TIM2->CCMR3 = (uint8_t)((uint8_t)(TIM2->CCMR3 & (uint8_t)(~TIM2_CCMR_OCM))
+    841                                      | (uint8_t)TIM2_OCMode);
+    842            }
+    843          }
+    844          
+    845          /**
+    846            * @brief  Sets the TIM2 Counter Register value.
+    847            * @param   Counter specifies the Counter register new value.
+    848            * This parameter is between 0x0000 and 0xFFFF.
+    849            * @retval None
+    850            */
+    851          void TIM2_SetCounter(uint16_t Counter)
+    852          {
+    853            /* Set the Counter Register value */
+    854            TIM2->CNTRH = (uint8_t)(Counter >> 8);
+    855            TIM2->CNTRL = (uint8_t)(Counter);
+    856          }
+    857          
+    858          /**
+    859            * @brief  Sets the TIM2 Autoreload Register value.
+    860            * @param   Autoreload specifies the Autoreload register new value.
+    861            * This parameter is between 0x0000 and 0xFFFF.
+    862            * @retval None
+    863            */
+    864          void TIM2_SetAutoreload(uint16_t Autoreload)
+    865          {
+    866            /* Set the Autoreload Register value */
+    867            TIM2->ARRH = (uint8_t)(Autoreload >> 8);
+    868            TIM2->ARRL = (uint8_t)(Autoreload);
+    869          }
+    870          
+    871          /**
+    872            * @brief  Sets the TIM2 Capture Compare1 Register value.
+    873            * @param   Compare1 specifies the Capture Compare1 register new value.
+    874            * This parameter is between 0x0000 and 0xFFFF.
+    875            * @retval None
+    876            */
+    877          void TIM2_SetCompare1(uint16_t Compare1)
+    878          {
+    879            /* Set the Capture Compare1 Register value */
+    880            TIM2->CCR1H = (uint8_t)(Compare1 >> 8);
+    881            TIM2->CCR1L = (uint8_t)(Compare1);
+    882          }
+    883          
+    884          /**
+    885            * @brief  Sets the TIM2 Capture Compare2 Register value.
+    886            * @param   Compare2 specifies the Capture Compare2 register new value.
+    887            * This parameter is between 0x0000 and 0xFFFF.
+    888            * @retval None
+    889            */
+    890          void TIM2_SetCompare2(uint16_t Compare2)
+    891          {
+    892            /* Set the Capture Compare2 Register value */
+    893            TIM2->CCR2H = (uint8_t)(Compare2 >> 8);
+    894            TIM2->CCR2L = (uint8_t)(Compare2);
+    895          }
+    896          
+    897          /**
+    898            * @brief  Sets the TIM2 Capture Compare3 Register value.
+    899            * @param   Compare3 specifies the Capture Compare3 register new value.
+    900            * This parameter is between 0x0000 and 0xFFFF.
+    901            * @retval None
+    902            */
+    903          void TIM2_SetCompare3(uint16_t Compare3)
+    904          {
+    905            /* Set the Capture Compare3 Register value */
+    906            TIM2->CCR3H = (uint8_t)(Compare3 >> 8);
+    907            TIM2->CCR3L = (uint8_t)(Compare3);
+    908          }
+    909          
+    910          /**
+    911            * @brief  Sets the TIM2 Input Capture 1 Prescaler.
+    912            * @param   TIM2_IC1Prescaler specifies the Input Capture prescaler new value
+    913            * This parameter can be one of the following values:
+    914            *                       - TIM2_ICPSC_DIV1: no prescaler
+    915            *                       - TIM2_ICPSC_DIV2: capture is done once every 2 events
+    916            *                       - TIM2_ICPSC_DIV4: capture is done once every 4 events
+    917            *                       - TIM2_ICPSC_DIV8: capture is done once every 8 events
+    918            * @retval None
+    919            */
+    920          void TIM2_SetIC1Prescaler(TIM2_ICPSC_TypeDef TIM2_IC1Prescaler)
+    921          {
+    922            /* Check the parameters */
+    923            assert_param(IS_TIM2_IC_PRESCALER_OK(TIM2_IC1Prescaler));
+    924            
+    925            /* Reset the IC1PSC Bits &Set the IC1PSC value */
+    926            TIM2->CCMR1 = (uint8_t)((uint8_t)(TIM2->CCMR1 & (uint8_t)(~TIM2_CCMR_ICxPSC))
+    927                                    | (uint8_t)TIM2_IC1Prescaler);
+    928          }
+    929          
+    930          /**
+    931            * @brief  Sets the TIM2 Input Capture 2 prescaler.
+    932            * @param   TIM2_IC2Prescaler specifies the Input Capture prescaler new value
+    933            * This parameter can be one of the following values:
+    934            *                       - TIM2_ICPSC_DIV1: no prescaler
+    935            *                       - TIM2_ICPSC_DIV2: capture is done once every 2 events
+    936            *                       - TIM2_ICPSC_DIV4: capture is done once every 4 events
+    937            *                       - TIM2_ICPSC_DIV8: capture is done once every 8 events
+    938            * @retval None
+    939            */
+    940          void TIM2_SetIC2Prescaler(TIM2_ICPSC_TypeDef TIM2_IC2Prescaler)
+    941          {
+    942            /* Check the parameters */
+    943            assert_param(IS_TIM2_IC_PRESCALER_OK(TIM2_IC2Prescaler));
+    944            
+    945            /* Reset the IC1PSC Bits &Set the IC1PSC value */
+    946            TIM2->CCMR2 = (uint8_t)((uint8_t)(TIM2->CCMR2 & (uint8_t)(~TIM2_CCMR_ICxPSC))
+    947                                    | (uint8_t)TIM2_IC2Prescaler);
+    948          }
+    949          
+    950          /**
+    951            * @brief  Sets the TIM2 Input Capture 3 prescaler.
+    952            * @param   TIM2_IC3Prescaler specifies the Input Capture prescaler new value
+    953            * This parameter can be one of the following values:
+    954            *                       - TIM2_ICPSC_DIV1: no prescaler
+    955            *                       - TIM2_ICPSC_DIV2: capture is done once every 2 events
+    956            *                       - TIM2_ICPSC_DIV4: capture is done once every 4 events
+    957            *                       - TIM2_ICPSC_DIV8: capture is done once every 8 events
+    958            * @retval None
+    959            */
+    960          void TIM2_SetIC3Prescaler(TIM2_ICPSC_TypeDef TIM2_IC3Prescaler)
+    961          {
+    962            
+    963            /* Check the parameters */
+    964            assert_param(IS_TIM2_IC_PRESCALER_OK(TIM2_IC3Prescaler));
+    965            /* Reset the IC1PSC Bits &Set the IC1PSC value */
+    966            TIM2->CCMR3 = (uint8_t)((uint8_t)(TIM2->CCMR3 & (uint8_t)(~TIM2_CCMR_ICxPSC))
+    967                                    | (uint8_t)TIM2_IC3Prescaler);
+    968          }
+    969          
+    970          /**
+    971            * @brief  Gets the TIM2 Input Capture 1 value.
+    972            * @param  None
+    973            * @retval Capture Compare 1 Register value.
+    974            */
+    975          uint16_t TIM2_GetCapture1(void)
+    976          {
+    977            /* Get the Capture 1 Register value */
+    978            uint16_t tmpccr1 = 0;
+    979            uint8_t tmpccr1l=0, tmpccr1h=0;
+    980            
+    981            tmpccr1h = TIM2->CCR1H;
+    982            tmpccr1l = TIM2->CCR1L;
+    983            
+    984            tmpccr1 = (uint16_t)(tmpccr1l);
+    985            tmpccr1 |= (uint16_t)((uint16_t)tmpccr1h << 8);
+    986            /* Get the Capture 1 Register value */
+    987            return (uint16_t)tmpccr1;
+    988          }
+    989          
+    990          /**
+    991            * @brief  Gets the TIM2 Input Capture 2 value.
+    992            * @param  None
+    993            * @retval Capture Compare 2 Register value.
+    994            */
+    995          uint16_t TIM2_GetCapture2(void)
+    996          {
+    997            /* Get the Capture 2 Register value */
+    998            uint16_t tmpccr2 = 0;
+    999            uint8_t tmpccr2l=0, tmpccr2h=0;
+   1000            
+   1001            tmpccr2h = TIM2->CCR2H;
+   1002            tmpccr2l = TIM2->CCR2L;
+   1003            
+   1004            tmpccr2 = (uint16_t)(tmpccr2l);
+   1005            tmpccr2 |= (uint16_t)((uint16_t)tmpccr2h << 8);
+   1006            /* Get the Capture 2 Register value */
+   1007            return (uint16_t)tmpccr2;
+   1008          }
+   1009          
+   1010          /**
+   1011            * @brief  Gets the TIM2 Input Capture 3 value.
+   1012            * @param  None
+   1013            * @retval Capture Compare 3 Register value.
+   1014            */
+   1015          uint16_t TIM2_GetCapture3(void)
+   1016          {
+   1017            /* Get the Capture 3 Register value */
+   1018            uint16_t tmpccr3 = 0;
+   1019            uint8_t tmpccr3l=0, tmpccr3h=0;
+   1020            
+   1021            tmpccr3h = TIM2->CCR3H;
+   1022            tmpccr3l = TIM2->CCR3L;
+   1023            
+   1024            tmpccr3 = (uint16_t)(tmpccr3l);
+   1025            tmpccr3 |= (uint16_t)((uint16_t)tmpccr3h << 8);
+   1026            /* Get the Capture 3 Register value */
+   1027            return (uint16_t)tmpccr3;
+   1028          }
+   1029          
+   1030          /**
+   1031            * @brief  Gets the TIM2 Counter value.
+   1032            * @param  None
+   1033            * @retval Counter Register value.
+   1034            */
+   1035          uint16_t TIM2_GetCounter(void)
+   1036          {
+   1037            uint16_t tmpcntr = 0;
+   1038            
+   1039            tmpcntr =  ((uint16_t)TIM2->CNTRH << 8);
+   1040            /* Get the Counter Register value */
+   1041            return (uint16_t)( tmpcntr| (uint16_t)(TIM2->CNTRL));
+   1042          }
+   1043          
+   1044          /**
+   1045            * @brief  Gets the TIM2 Prescaler value.
+   1046            * @param  None
+   1047            * @retval Prescaler Register configuration value  @ref TIM2_Prescaler_TypeDef.
+   1048            */
+   1049          TIM2_Prescaler_TypeDef TIM2_GetPrescaler(void)
+   1050          {
+   1051            /* Get the Prescaler Register value */
+   1052            return (TIM2_Prescaler_TypeDef)(TIM2->PSCR);
+   1053          }
+   1054          
+   1055          /**
+   1056            * @brief  Checks whether the specified TIM2 flag is set or not.
+   1057            * @param   TIM2_FLAG specifies the flag to check.
+   1058            * This parameter can be one of the following values:
+   1059            *                       - TIM2_FLAG_UPDATE: TIM2 update Flag
+   1060            *                       - TIM2_FLAG_CC1: TIM2 Capture Compare 1 Flag
+   1061            *                       - TIM2_FLAG_CC2: TIM2 Capture Compare 2 Flag
+   1062            *                       - TIM2_FLAG_CC3: TIM2 Capture Compare 3 Flag
+   1063            *                       - TIM2_FLAG_CC1OF: TIM2 Capture Compare 1 over capture Flag
+   1064            *                       - TIM2_FLAG_CC2OF: TIM2 Capture Compare 2 over capture Flag
+   1065            *                       - TIM2_FLAG_CC3OF: TIM2 Capture Compare 3 over capture Flag
+   1066            * @retval FlagStatus The new state of TIM2_FLAG (SET or RESET).
+   1067            */
+   1068          FlagStatus TIM2_GetFlagStatus(TIM2_FLAG_TypeDef TIM2_FLAG)
+   1069          {
+   1070            FlagStatus bitstatus = RESET;
+   1071            uint8_t tim2_flag_l = 0, tim2_flag_h = 0;
+   1072            
+   1073            /* Check the parameters */
+   1074            assert_param(IS_TIM2_GET_FLAG_OK(TIM2_FLAG));
+   1075            
+   1076            tim2_flag_l = (uint8_t)(TIM2->SR1 & (uint8_t)TIM2_FLAG);
+   1077            tim2_flag_h = (uint8_t)((uint16_t)TIM2_FLAG >> 8);
+   1078            
+   1079            if ((tim2_flag_l | (uint8_t)(TIM2->SR2 & tim2_flag_h)) != (uint8_t)RESET )
+   1080            {
+   1081              bitstatus = SET;
+   1082            }
+   1083            else
+   1084            {
+   1085              bitstatus = RESET;
+   1086            }
+   1087            return (FlagStatus)bitstatus;
+   1088          }
+   1089          
+   1090          /**
+   1091            * @brief  Clears the TIM2’s pending flags.
+   1092            * @param   TIM2_FLAG specifies the flag to clear.
+   1093            * This parameter can be one of the following values:
+   1094            *                       - TIM2_FLAG_UPDATE: TIM2 update Flag
+   1095            *                       - TIM2_FLAG_CC1: TIM2 Capture Compare 1 Flag
+   1096            *                       - TIM2_FLAG_CC2: TIM2 Capture Compare 2 Flag
+   1097            *                       - TIM2_FLAG_CC3: TIM2 Capture Compare 3 Flag
+   1098            *                       - TIM2_FLAG_CC1OF: TIM2 Capture Compare 1 over capture Flag
+   1099            *                       - TIM2_FLAG_CC2OF: TIM2 Capture Compare 2 over capture Flag
+   1100            *                       - TIM2_FLAG_CC3OF: TIM2 Capture Compare 3 over capture Flag
+   1101            * @retval None.
+   1102            */
+   1103          void TIM2_ClearFlag(TIM2_FLAG_TypeDef TIM2_FLAG)
+   1104          {
+   1105            /* Check the parameters */
+   1106            assert_param(IS_TIM2_CLEAR_FLAG_OK(TIM2_FLAG));
+   1107            
+   1108            /* Clear the flags (rc_w0) clear this bit by writing 0. Writing ‘1’ has no effect*/
+   1109            TIM2->SR1 = (uint8_t)(~((uint8_t)(TIM2_FLAG)));
+   1110            TIM2->SR2 = (uint8_t)(~((uint8_t)((uint8_t)TIM2_FLAG >> 8)));
+   1111          }
+   1112          
+   1113          /**
+   1114            * @brief  Checks whether the TIM2 interrupt has occurred or not.
+   1115            * @param   TIM2_IT specifies the TIM2 interrupt source to check.
+   1116            * This parameter can be one of the following values:
+   1117            *                       - TIM2_IT_UPDATE: TIM2 update Interrupt source
+   1118            *                       - TIM2_IT_CC1: TIM2 Capture Compare 1 Interrupt source
+   1119            *                       - TIM2_IT_CC2: TIM2 Capture Compare 2 Interrupt source
+   1120            *                       - TIM2_IT_CC3: TIM2 Capture Compare 3 Interrupt source
+   1121            * @retval ITStatus The new state of the TIM2_IT(SET or RESET).
+   1122            */
+   1123          ITStatus TIM2_GetITStatus(TIM2_IT_TypeDef TIM2_IT)
+   1124          {
+   1125            ITStatus bitstatus = RESET;
+   1126            uint8_t TIM2_itStatus = 0, TIM2_itEnable = 0;
+   1127            
+   1128            /* Check the parameters */
+   1129            assert_param(IS_TIM2_GET_IT_OK(TIM2_IT));
+   1130            
+   1131            TIM2_itStatus = (uint8_t)(TIM2->SR1 & TIM2_IT);
+   1132            
+   1133            TIM2_itEnable = (uint8_t)(TIM2->IER & TIM2_IT);
+   1134            
+   1135            if ((TIM2_itStatus != (uint8_t)RESET ) && (TIM2_itEnable != (uint8_t)RESET ))
+   1136            {
+   1137              bitstatus = SET;
+   1138            }
+   1139            else
+   1140            {
+   1141              bitstatus = RESET;
+   1142            }
+   1143            return (ITStatus)(bitstatus);
+   1144          }
+   1145          
+   1146          /**
+   1147            * @brief  Clears the TIM2's interrupt pending bits.
+   1148            * @param   TIM2_IT specifies the pending bit to clear.
+   1149            * This parameter can be one of the following values:
+   1150            *                       - TIM2_IT_UPDATE: TIM2 update Interrupt source
+   1151            *                       - TIM2_IT_CC1: TIM2 Capture Compare 1 Interrupt source
+   1152            *                       - TIM2_IT_CC2: TIM2 Capture Compare 2 Interrupt source
+   1153            *                       - TIM2_IT_CC3: TIM2 Capture Compare 3 Interrupt source
+   1154            * @retval None.
+   1155            */
+   1156          void TIM2_ClearITPendingBit(TIM2_IT_TypeDef TIM2_IT)
+   1157          {
+   1158            /* Check the parameters */
+   1159            assert_param(IS_TIM2_IT_OK(TIM2_IT));
+   1160            
+   1161            /* Clear the IT pending Bit */
+   1162            TIM2->SR1 = (uint8_t)(~TIM2_IT);
+   1163          }
+   1164          
+   1165          /**
+   1166            * @brief  Configure the TI1 as Input.
+   1167            * @param   TIM2_ICPolarity  The Input Polarity.
+   1168            * This parameter can be one of the following values:
+   1169            *                       - TIM2_ICPOLARITY_FALLING
+   1170            *                       - TIM2_ICPOLARITY_RISING
+   1171            * @param   TIM2_ICSelection specifies the input to be used.
+   1172            * This parameter can be one of the following values:
+   1173            *                       - TIM2_ICSELECTION_DIRECTTI: TIM2 Input 1 is selected to
+   1174            *                         be connected to IC1.
+   1175            *                       - TIM2_ICSELECTION_INDIRECTTI: TIM2 Input 1 is selected to
+   1176            *                         be connected to IC2.
+   1177            * @param   TIM2_ICFilter Specifies the Input Capture Filter.
+   1178            * This parameter must be a value between 0x00 and 0x0F.
+   1179            * @retval None
+   1180            */
+   1181          static void TI1_Config(uint8_t TIM2_ICPolarity,
+   1182                                 uint8_t TIM2_ICSelection,
+   1183                                 uint8_t TIM2_ICFilter)
+   1184          {
+   1185            /* Disable the Channel 1: Reset the CCE Bit */
+   1186            TIM2->CCER1 &= (uint8_t)(~TIM2_CCER1_CC1E);
+   1187            
+   1188            /* Select the Input and set the filter */
+   1189            TIM2->CCMR1  = (uint8_t)((uint8_t)(TIM2->CCMR1 & (uint8_t)(~(uint8_t)( TIM2_CCMR_CCxS | TIM2_CCMR_ICxF )))
+   1190                                     | (uint8_t)(((TIM2_ICSelection)) | ((uint8_t)( TIM2_ICFilter << 4))));
+   1191            
+   1192            /* Select the Polarity */
+   1193            if (TIM2_ICPolarity != TIM2_ICPOLARITY_RISING)
+   1194            {
+   1195              TIM2->CCER1 |= TIM2_CCER1_CC1P;
+   1196            }
+   1197            else
+   1198            {
+   1199              TIM2->CCER1 &= (uint8_t)(~TIM2_CCER1_CC1P);
+   1200            }
+   1201            /* Set the CCE Bit */
+   1202            TIM2->CCER1 |= TIM2_CCER1_CC1E;
+   1203          }
+   1204          
+   1205          /**
+   1206            * @brief  Configure the TI2 as Input.
+   1207            * @param   TIM2_ICPolarity  The Input Polarity.
+   1208            * This parameter can be one of the following values:
+   1209            *                       - TIM2_ICPOLARITY_FALLING
+   1210            *                       - TIM2_ICPOLARITY_RISING
+   1211            * @param   TIM2_ICSelection specifies the input to be used.
+   1212            * This parameter can be one of the following values:
+   1213            *                       - TIM2_ICSELECTION_DIRECTTI: TIM2 Input 2 is selected to
+   1214            *                         be connected to IC2.
+   1215            *                       - TIM2_ICSELECTION_INDIRECTTI: TIM2 Input 2 is selected to
+   1216            *                         be connected to IC1.
+   1217            * @param   TIM2_ICFilter Specifies the Input Capture Filter.
+   1218            * This parameter must be a value between 0x00 and 0x0F.
+   1219            * @retval None
+   1220            */
+   1221          static void TI2_Config(uint8_t TIM2_ICPolarity,
+   1222                                 uint8_t TIM2_ICSelection,
+   1223                                 uint8_t TIM2_ICFilter)
+   1224          {
+   1225            /* Disable the Channel 2: Reset the CCE Bit */
+   1226            TIM2->CCER1 &= (uint8_t)(~TIM2_CCER1_CC2E);
+   1227            
+   1228            /* Select the Input and set the filter */
+   1229            TIM2->CCMR2 = (uint8_t)((uint8_t)(TIM2->CCMR2 & (uint8_t)(~(uint8_t)( TIM2_CCMR_CCxS | TIM2_CCMR_ICxF ))) 
+   1230                                    | (uint8_t)(( (TIM2_ICSelection)) | ((uint8_t)( TIM2_ICFilter << 4))));
+   1231            
+   1232            
+   1233            /* Select the Polarity */
+   1234            if (TIM2_ICPolarity != TIM2_ICPOLARITY_RISING)
+   1235            {
+   1236              TIM2->CCER1 |= TIM2_CCER1_CC2P;
+   1237            }
+   1238            else
+   1239            {
+   1240              TIM2->CCER1 &= (uint8_t)(~TIM2_CCER1_CC2P);
+   1241            }
+   1242            
+   1243            /* Set the CCE Bit */
+   1244            TIM2->CCER1 |= TIM2_CCER1_CC2E;
+   1245          }
+   1246          
+   1247          /**
+   1248            * @brief  Configure the TI3 as Input.
+   1249            * @param   TIM2_ICPolarity  The Input Polarity.
+   1250            * This parameter can be one of the following values:
+   1251            *                       - TIM2_ICPOLARITY_FALLING
+   1252            *                       - TIM2_ICPOLARITY_RISING
+   1253            * @param   TIM2_ICSelection specifies the input to be used.
+   1254            * This parameter can be one of the following values:
+   1255            *                       - TIM2_ICSELECTION_DIRECTTI: TIM2 Input 3 is selected to
+   1256            *                         be connected to IC3.
+   1257            * @param   TIM2_ICFilter Specifies the Input Capture Filter.
+   1258            * This parameter must be a value between 0x00 and 0x0F.
+   1259            * @retval None
+   1260            */
+   1261          static void TI3_Config(uint8_t TIM2_ICPolarity, uint8_t TIM2_ICSelection,
+   1262                                 uint8_t TIM2_ICFilter)
+   1263          {
+   1264            /* Disable the Channel 3: Reset the CCE Bit */
+   1265            TIM2->CCER2 &=  (uint8_t)(~TIM2_CCER2_CC3E);
+   1266            
+   1267            /* Select the Input and set the filter */
+   1268            TIM2->CCMR3 = (uint8_t)((uint8_t)(TIM2->CCMR3 & (uint8_t)(~( TIM2_CCMR_CCxS | TIM2_CCMR_ICxF))) 
+   1269                                    | (uint8_t)(( (TIM2_ICSelection)) | ((uint8_t)( TIM2_ICFilter << 4))));
+   1270            
+   1271            
+   1272            /* Select the Polarity */
+   1273            if (TIM2_ICPolarity != TIM2_ICPOLARITY_RISING)
+   1274            {
+   1275              TIM2->CCER2 |= TIM2_CCER2_CC3P;
+   1276            }
+   1277            else
+   1278            {
+   1279              TIM2->CCER2 &= (uint8_t)(~TIM2_CCER2_CC3P);
+   1280            }
+   1281            /* Set the CCE Bit */
+   1282            TIM2->CCER2 |= TIM2_CCER2_CC3E;
+   1283          }
+   1284          
+   1285          /**
+   1286            * @}
+   1287            */
+   1288            
+   1289            /**
+   1290            * @}
+   1291            */
+   1292          
+   1293          
+   1294          /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+      75  ?_0
+      46  TI1_Config
+      46  TI2_Config
+      46  TI3_Config
+      48  TIM2_ARRPreloadConfig
+     125  TIM2_CCxCmd
+      52  TIM2_ClearFlag
+      40  TIM2_ClearITPendingBit
+      48  TIM2_Cmd
+      89  TIM2_DeInit
+      46  TIM2_ForcedOC1Config
+      46  TIM2_ForcedOC2Config
+      46  TIM2_ForcedOC3Config
+      33  TIM2_GenerateEvent
+      42  TIM2_GetCapture1
+      42  TIM2_GetCapture2
+      42  TIM2_GetCapture3
+      27  TIM2_GetCounter
+     117  TIM2_GetFlagStatus
+      87  TIM2_GetITStatus
+       4  TIM2_GetPrescaler
+     243  TIM2_ICInit
+      86  TIM2_ITConfig
+     179  TIM2_OC1Init
+      48  TIM2_OC1PolarityConfig
+      48  TIM2_OC1PreloadConfig
+     179  TIM2_OC2Init
+      48  TIM2_OC2PolarityConfig
+      48  TIM2_OC2PreloadConfig
+     179  TIM2_OC3Init
+      48  TIM2_OC3PolarityConfig
+      48  TIM2_OC3PreloadConfig
+     266  TIM2_PWMIConfig
+     157  TIM2_PrescalerConfig
+     161  TIM2_SelectOCxM
+      48  TIM2_SelectOnePulseMode
+       9  TIM2_SetAutoreload
+       9  TIM2_SetCompare1
+       9  TIM2_SetCompare2
+       9  TIM2_SetCompare3
+       9  TIM2_SetCounter
+      56  TIM2_SetIC1Prescaler
+      56  TIM2_SetIC2Prescaler
+      56  TIM2_SetIC3Prescaler
+      16  TIM2_TimeBaseInit
+      48  TIM2_UpdateDisableConfig
+      48  TIM2_UpdateRequestConfig
+
+ 
+ 3 183 bytes in section .far_func.text
+    75 bytes in section .near.rodata
+ 
+ 3 183 bytes of CODE  memory
+    75 bytes of CONST memory
+
+Errors: none
+Warnings: none

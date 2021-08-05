@@ -1,0 +1,762 @@
+###############################################################################
+#
+# IAR C/C++ Compiler V3.11.1.207 for STM8                 17/Jan/2020  20:56:10
+# Copyright 2010-2019 IAR Systems AB.
+# PC-locked license - IAR Embedded Workbench for STMicroelectronics STM8
+#
+#    Source file  =  
+#        H:\Project_For_AKS\STM8S\Libraries\STM8S_StdPeriph_Driver\src\stm8s_adc1.c
+#    Command line =  
+#        -f C:\Users\chuti\AppData\Local\Temp\EW204A.tmp
+#        (H:\Project_For_AKS\STM8S\Libraries\STM8S_StdPeriph_Driver\src\stm8s_adc1.c
+#        -e -On --no_cse --no_unroll --no_inline --no_code_motion --no_tbaa
+#        --no_cross_call --debug --code_model medium --data_model medium -o
+#        H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\STM8S103\Obj
+#        --dlib_config E:\CaiPhanMem\IAR-STM8\stm8\LIB\dlstm8mmn.h -D STM8S003
+#        -lcN H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\STM8S103\List
+#        -I H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\..\ -I
+#        H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\..\..\..\Libraries\STM8S_StdPeriph_Driver\inc\
+#        --vregs 16)
+#    Locale       =  English_USA.1252
+#    List file    =  
+#        H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\STM8S103\List\stm8s_adc1.lst
+#    Object file  =  
+#        H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\STM8S103\Obj\stm8s_adc1.o
+#
+###############################################################################
+
+H:\Project_For_AKS\STM8S\Libraries\STM8S_StdPeriph_Driver\src\stm8s_adc1.c
+      1          /**
+      2            ******************************************************************************
+      3            * @file    stm8s_adc1.c
+      4            * @author  MCD Application Team
+      5            * @version V2.2.0
+      6            * @date    30-September-2014
+      7            * @brief   This file contains all the functions/macros for the ADC1 peripheral.
+      8             ******************************************************************************
+      9            * @attention
+     10            *
+     11            * <h2><center>&copy; COPYRIGHT 2014 STMicroelectronics</center></h2>
+     12            *
+     13            * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
+     14            * You may not use this file except in compliance with the License.
+     15            * You may obtain a copy of the License at:
+     16            *
+     17            *        http://www.st.com/software_license_agreement_liberty_v2
+     18            *
+     19            * Unless required by applicable law or agreed to in writing, software 
+     20            * distributed under the License is distributed on an "AS IS" BASIS, 
+     21            * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     22            * See the License for the specific language governing permissions and
+     23            * limitations under the License.
+     24            *
+     25            ******************************************************************************
+     26            */
+     27          
+     28          /* Includes ------------------------------------------------------------------*/
+     29          #include "stm8s_adc1.h"
+     30          
+     31          /** @addtogroup STM8S_StdPeriph_Driver
+     32            * @{
+     33            */
+     34          /* Private typedef -----------------------------------------------------------*/
+     35          /* Private define ------------------------------------------------------------*/
+     36          /* Private macro -------------------------------------------------------------*/
+     37          /* Private variables ---------------------------------------------------------*/
+     38          /* Private function prototypes -----------------------------------------------*/
+     39          /* Private functions ---------------------------------------------------------*/
+     40          /* Public functions ----------------------------------------------------------*/
+     41          
+     42          /**
+     43            * @addtogroup ADC1_Public_Functions
+     44            * @{
+     45            */
+     46          
+     47          /**
+     48            * @brief  Deinitializes the ADC1 peripheral registers to their default reset values.
+     49            * @param  None
+     50            * @retval None
+     51            */
+     52          void ADC1_DeInit(void)
+     53          {
+     54            ADC1->CSR  = ADC1_CSR_RESET_VALUE;
+     55            ADC1->CR1  = ADC1_CR1_RESET_VALUE;
+     56            ADC1->CR2  = ADC1_CR2_RESET_VALUE;
+     57            ADC1->CR3  = ADC1_CR3_RESET_VALUE;
+     58            ADC1->TDRH = ADC1_TDRH_RESET_VALUE;
+     59            ADC1->TDRL = ADC1_TDRL_RESET_VALUE;
+     60            ADC1->HTRH = ADC1_HTRH_RESET_VALUE;
+     61            ADC1->HTRL = ADC1_HTRL_RESET_VALUE;
+     62            ADC1->LTRH = ADC1_LTRH_RESET_VALUE;
+     63            ADC1->LTRL = ADC1_LTRL_RESET_VALUE;
+     64            ADC1->AWCRH = ADC1_AWCRH_RESET_VALUE;
+     65            ADC1->AWCRL = ADC1_AWCRL_RESET_VALUE;
+     66          }
+     67          
+     68          /**
+     69            * @brief  Initializes the ADC1 peripheral according to the specified parameters
+     70            * @param   ADC1_ConversionMode: specifies the conversion mode
+     71            * can be one of the values of @ref ADC1_ConvMode_TypeDef.
+     72            * @param   ADC1_Channel: specifies the channel to convert
+     73            * can be one of the values of @ref ADC1_Channel_TypeDef.
+     74            * @param   ADC1_PrescalerSelection: specifies the ADC1 prescaler
+     75            * can be one of the values of @ref ADC1_PresSel_TypeDef.
+     76            * @param   ADC1_ExtTrigger: specifies the external trigger
+     77            * can be one of the values of @ref ADC1_ExtTrig_TypeDef.
+     78            * @param   ADC1_ExtTriggerState: specifies the external trigger new state
+     79            * can be one of the values of @ref FunctionalState.
+     80            * @param   ADC1_Align: specifies the converted data alignment
+     81            * can be one of the values of @ref ADC1_Align_TypeDef.
+     82            * @param   ADC1_SchmittTriggerChannel: specifies the schmitt trigger channel
+     83            * can be one of the values of @ref ADC1_SchmittTrigg_TypeDef.
+     84            * @param   ADC1_SchmittTriggerState: specifies the schmitt trigger state
+     85            * can be one of the values of @ref FunctionalState.
+     86            * @retval None
+     87            */
+     88          void ADC1_Init(ADC1_ConvMode_TypeDef ADC1_ConversionMode, ADC1_Channel_TypeDef ADC1_Channel, ADC1_PresSel_TypeDef ADC1_PrescalerSelection, ADC1_ExtTrig_TypeDef ADC1_ExtTrigger, FunctionalState ADC1_ExtTriggerState, ADC1_Align_TypeDef ADC1_Align, ADC1_SchmittTrigg_TypeDef ADC1_SchmittTriggerChannel, FunctionalState ADC1_SchmittTriggerState)
+     89          {
+     90            /* Check the parameters */
+     91            assert_param(IS_ADC1_CONVERSIONMODE_OK(ADC1_ConversionMode));
+     92            assert_param(IS_ADC1_CHANNEL_OK(ADC1_Channel));
+     93            assert_param(IS_ADC1_PRESSEL_OK(ADC1_PrescalerSelection));
+     94            assert_param(IS_ADC1_EXTTRIG_OK(ADC1_ExtTrigger));
+     95            assert_param(IS_FUNCTIONALSTATE_OK(((ADC1_ExtTriggerState))));
+     96            assert_param(IS_ADC1_ALIGN_OK(ADC1_Align));
+     97            assert_param(IS_ADC1_SCHMITTTRIG_OK(ADC1_SchmittTriggerChannel));
+     98            assert_param(IS_FUNCTIONALSTATE_OK(ADC1_SchmittTriggerState));
+     99            
+    100            /*-----------------CR1 & CSR configuration --------------------*/
+    101            /* Configure the conversion mode and the channel to convert
+    102            respectively according to ADC1_ConversionMode & ADC1_Channel values  &  ADC1_Align values */
+    103            ADC1_ConversionConfig(ADC1_ConversionMode, ADC1_Channel, ADC1_Align);
+    104            /* Select the prescaler division factor according to ADC1_PrescalerSelection values */
+    105            ADC1_PrescalerConfig(ADC1_PrescalerSelection);
+    106            
+    107            /*-----------------CR2 configuration --------------------*/
+    108            /* Configure the external trigger state and event respectively
+    109            according to NewState, ADC1_ExtTrigger */
+    110            ADC1_ExternalTriggerConfig(ADC1_ExtTrigger, ADC1_ExtTriggerState);
+    111            
+    112            /*------------------TDR configuration ---------------------------*/
+    113            /* Configure the schmitt trigger channel and state respectively
+    114            according to ADC1_SchmittTriggerChannel & ADC1_SchmittTriggerNewState  values */
+    115            ADC1_SchmittTriggerConfig(ADC1_SchmittTriggerChannel, ADC1_SchmittTriggerState);
+    116            
+    117            /* Enable the ADC1 peripheral */
+    118            ADC1->CR1 |= ADC1_CR1_ADON;
+    119          }
+    120          
+    121          /**
+    122            * @brief  Enables or Disables the ADC1 peripheral.
+    123            * @param  NewState: specifies the peripheral enabled or disabled state.
+    124            * @retval None
+    125            */
+    126          void ADC1_Cmd(FunctionalState NewState)
+    127          {
+    128            /* Check the parameters */
+    129            assert_param(IS_FUNCTIONALSTATE_OK(NewState));
+    130            
+    131            if (NewState != DISABLE)
+    132            {
+    133              ADC1->CR1 |= ADC1_CR1_ADON;
+    134            }
+    135            else /* NewState == DISABLE */
+    136            {
+    137              ADC1->CR1 &= (uint8_t)(~ADC1_CR1_ADON);
+    138            }
+    139          }
+    140          
+    141          /**
+    142            * @brief  Enables or Disables the ADC1 scan mode.
+    143            * @param  NewState: specifies the selected mode enabled or disabled state.
+    144            * @retval None
+    145            */
+    146          void ADC1_ScanModeCmd(FunctionalState NewState)
+    147          {
+    148            /* Check the parameters */
+    149            assert_param(IS_FUNCTIONALSTATE_OK(NewState));
+    150            
+    151            if (NewState != DISABLE)
+    152            {
+    153              ADC1->CR2 |= ADC1_CR2_SCAN;
+    154            }
+    155            else /* NewState == DISABLE */
+    156            {
+    157              ADC1->CR2 &= (uint8_t)(~ADC1_CR2_SCAN);
+    158            }
+    159          }
+    160          
+    161          /**
+    162            * @brief  Enables or Disables the ADC1 data store into the Data Buffer registers rather than in the Data Register
+    163            * @param   NewState: specifies the selected mode enabled or disabled state.
+    164            * @retval None
+    165            */
+    166          void ADC1_DataBufferCmd(FunctionalState NewState)
+    167          {
+    168            /* Check the parameters */
+    169            assert_param(IS_FUNCTIONALSTATE_OK(NewState));
+    170            
+    171            if (NewState != DISABLE)
+    172            {
+    173              ADC1->CR3 |= ADC1_CR3_DBUF;
+    174            }
+    175            else /* NewState == DISABLE */
+    176            {
+    177              ADC1->CR3 &= (uint8_t)(~ADC1_CR3_DBUF);
+    178            }
+    179          }
+    180          
+    181          /**
+    182            * @brief  Enables or disables the ADC1 interrupt.
+    183            * @param   ADC1_IT specifies the name of the interrupt to enable or disable.
+    184            * This parameter can be one of the following values:
+    185            *    - ADC1_IT_AWDITEN : Analog WDG interrupt enable
+    186            *    - ADC1_IT_EOCITEN  : EOC iterrupt enable
+    187            * @param   NewState specifies the state of the interrupt to apply.
+    188            * @retval None
+    189            */
+    190          void ADC1_ITConfig(ADC1_IT_TypeDef ADC1_IT, FunctionalState NewState)
+    191          {
+    192            /* Check the parameters */
+    193            assert_param(IS_ADC1_IT_OK(ADC1_IT));
+    194            assert_param(IS_FUNCTIONALSTATE_OK(NewState));
+    195            
+    196            if (NewState != DISABLE)
+    197            {
+    198              /* Enable the ADC1 interrupts */
+    199              ADC1->CSR |= (uint8_t)ADC1_IT;
+    200            }
+    201            else  /* NewState == DISABLE */
+    202            {
+    203              /* Disable the ADC1 interrupts */
+    204              ADC1->CSR &= (uint8_t)((uint16_t)~(uint16_t)ADC1_IT);
+    205            }
+    206          }
+    207          
+    208          /**
+    209            * @brief  Configure the ADC1 prescaler division factor.
+    210            * @param   ADC1_Prescaler: the selected precaler.
+    211            * It can be one of the values of @ref ADC1_PresSel_TypeDef.
+    212            * @retval None
+    213            */
+    214          void ADC1_PrescalerConfig(ADC1_PresSel_TypeDef ADC1_Prescaler)
+    215          {
+    216            /* Check the parameter */
+    217            assert_param(IS_ADC1_PRESSEL_OK(ADC1_Prescaler));
+    218            
+    219            /* Clear the SPSEL bits */
+    220            ADC1->CR1 &= (uint8_t)(~ADC1_CR1_SPSEL);
+    221            /* Select the prescaler division factor according to ADC1_PrescalerSelection values */
+    222            ADC1->CR1 |= (uint8_t)(ADC1_Prescaler);
+    223          }
+    224          
+    225          /**
+    226            * @brief  Enables or disables the ADC1 Schmitt Trigger on a selected channel.
+    227            * @param   ADC1_SchmittTriggerChannel specifies the desired Channel.
+    228            * It can be set of the values of @ref ADC1_SchmittTrigg_TypeDef.
+    229            * @param   NewState specifies Channel new status.
+    230            * can have one of the values of @ref FunctionalState.
+    231            * @retval None
+    232            */
+    233          void ADC1_SchmittTriggerConfig(ADC1_SchmittTrigg_TypeDef ADC1_SchmittTriggerChannel, FunctionalState NewState)
+    234          {
+    235            /* Check the parameters */
+    236            assert_param(IS_ADC1_SCHMITTTRIG_OK(ADC1_SchmittTriggerChannel));
+    237            assert_param(IS_FUNCTIONALSTATE_OK(NewState));
+    238            
+    239            if (ADC1_SchmittTriggerChannel == ADC1_SCHMITTTRIG_ALL)
+    240            {
+    241              if (NewState != DISABLE)
+    242              {
+    243                ADC1->TDRL &= (uint8_t)0x0;
+    244                ADC1->TDRH &= (uint8_t)0x0;
+    245              }
+    246              else /* NewState == DISABLE */
+    247              {
+    248                ADC1->TDRL |= (uint8_t)0xFF;
+    249                ADC1->TDRH |= (uint8_t)0xFF;
+    250              }
+    251            }
+    252            else if (ADC1_SchmittTriggerChannel < ADC1_SCHMITTTRIG_CHANNEL8)
+    253            {
+    254              if (NewState != DISABLE)
+    255              {
+    256                ADC1->TDRL &= (uint8_t)(~(uint8_t)((uint8_t)0x01 << (uint8_t)ADC1_SchmittTriggerChannel));
+    257              }
+    258              else /* NewState == DISABLE */
+    259              {
+    260                ADC1->TDRL |= (uint8_t)((uint8_t)0x01 << (uint8_t)ADC1_SchmittTriggerChannel);
+    261              }
+    262            }
+    263            else /* ADC1_SchmittTriggerChannel >= ADC1_SCHMITTTRIG_CHANNEL8 */
+    264            {
+    265              if (NewState != DISABLE)
+    266              {
+    267                ADC1->TDRH &= (uint8_t)(~(uint8_t)((uint8_t)0x01 << ((uint8_t)ADC1_SchmittTriggerChannel - (uint8_t)8)));
+    268              }
+    269              else /* NewState == DISABLE */
+    270              {
+    271                ADC1->TDRH |= (uint8_t)((uint8_t)0x01 << ((uint8_t)ADC1_SchmittTriggerChannel - (uint8_t)8));
+    272              }
+    273            }
+    274          }
+    275          
+    276          /**
+    277            * @brief  Configure the ADC1 conversion on selected channel.
+    278            * @param   ADC1_ConversionMode Specifies the conversion type.
+    279            * It can be set of the values of @ref ADC1_ConvMode_TypeDef
+    280            * @param   ADC1_Channel specifies the ADC1 Channel.
+    281            * It can be set of the values of @ref ADC1_Channel_TypeDef
+    282            * @param   ADC1_Align specifies the converted data alignment.
+    283            * It can be set of the values of @ref ADC1_Align_TypeDef
+    284            * @retval None
+    285            */
+    286          void ADC1_ConversionConfig(ADC1_ConvMode_TypeDef ADC1_ConversionMode, ADC1_Channel_TypeDef ADC1_Channel, ADC1_Align_TypeDef ADC1_Align)
+    287          {
+    288            /* Check the parameters */
+    289            assert_param(IS_ADC1_CONVERSIONMODE_OK(ADC1_ConversionMode));
+    290            assert_param(IS_ADC1_CHANNEL_OK(ADC1_Channel));
+    291            assert_param(IS_ADC1_ALIGN_OK(ADC1_Align));
+    292            
+    293            /* Clear the align bit */
+    294            ADC1->CR2 &= (uint8_t)(~ADC1_CR2_ALIGN);
+    295            /* Configure the data alignment */
+    296            ADC1->CR2 |= (uint8_t)(ADC1_Align);
+    297            
+    298            if (ADC1_ConversionMode == ADC1_CONVERSIONMODE_CONTINUOUS)
+    299            {
+    300              /* Set the continuous conversion mode */
+    301              ADC1->CR1 |= ADC1_CR1_CONT;
+    302            }
+    303            else /* ADC1_ConversionMode == ADC1_CONVERSIONMODE_SINGLE */
+    304            {
+    305              /* Set the single conversion mode */
+    306              ADC1->CR1 &= (uint8_t)(~ADC1_CR1_CONT);
+    307            }
+    308            
+    309            /* Clear the ADC1 channels */
+    310            ADC1->CSR &= (uint8_t)(~ADC1_CSR_CH);
+    311            /* Select the ADC1 channel */
+    312            ADC1->CSR |= (uint8_t)(ADC1_Channel);
+    313          }
+    314          
+    315          /**
+    316            * @brief  Configure the ADC1 conversion on external trigger event.
+    317            * @par Full description:
+    318            * The selected external trigger event can be enabled or disabled.
+    319            * @param   ADC1_ExtTrigger to select the External trigger event.
+    320            * can have one of the values of @ref ADC1_ExtTrig_TypeDef.
+    321            * @param   NewState to enable/disable the selected external trigger
+    322            * can have one of the values of @ref FunctionalState.
+    323            * @retval None
+    324            */
+    325          void ADC1_ExternalTriggerConfig(ADC1_ExtTrig_TypeDef ADC1_ExtTrigger, FunctionalState NewState)
+    326          {
+    327            /* Check the parameters */
+    328            assert_param(IS_ADC1_EXTTRIG_OK(ADC1_ExtTrigger));
+    329            assert_param(IS_FUNCTIONALSTATE_OK(NewState));
+    330            
+    331            /* Clear the external trigger selection bits */
+    332            ADC1->CR2 &= (uint8_t)(~ADC1_CR2_EXTSEL);
+    333            
+    334            if (NewState != DISABLE)
+    335            {
+    336              /* Enable the selected external Trigger */
+    337              ADC1->CR2 |= (uint8_t)(ADC1_CR2_EXTTRIG);
+    338            }
+    339            else /* NewState == DISABLE */
+    340            {
+    341              /* Disable the selected external trigger */
+    342              ADC1->CR2 &= (uint8_t)(~ADC1_CR2_EXTTRIG);
+    343            }
+    344            
+    345            /* Set the selected external trigger */
+    346            ADC1->CR2 |= (uint8_t)(ADC1_ExtTrigger);
+    347          }
+    348          
+    349          /**
+    350            * @brief  Start ADC1 conversion
+    351            * @par Full description:
+    352            * This function  triggers the start of conversion, after ADC1 configuration.
+    353            * @param  None
+    354            * @retval None
+    355            * @par Required preconditions:
+    356            * Enable the ADC1 peripheral before calling this function
+    357            */
+    358          void ADC1_StartConversion(void)
+    359          {
+    360            ADC1->CR1 |= ADC1_CR1_ADON;
+    361          }
+    362          
+    363          /**
+    364            * @brief  Get one sample of measured signal.
+    365            * @param  None
+    366            * @retval ConversionValue:  value of the measured signal.
+    367            * @par Required preconditions:
+    368            * ADC1 conversion finished.
+    369            */
+    370          uint16_t ADC1_GetConversionValue(void)
+    371          {
+    372            uint16_t temph = 0;
+    373            uint8_t templ = 0;
+    374            
+    375            if ((ADC1->CR2 & ADC1_CR2_ALIGN) != 0) /* Right alignment */
+    376            {
+    377              /* Read LSB first */
+    378              templ = ADC1->DRL;
+    379              /* Then read MSB */
+    380              temph = ADC1->DRH;
+    381              
+    382              temph = (uint16_t)(templ | (uint16_t)(temph << (uint8_t)8));
+    383            }
+    384            else /* Left alignment */
+    385            {
+    386              /* Read MSB first*/
+    387              temph = ADC1->DRH;
+    388              /* Then read LSB */
+    389              templ = ADC1->DRL;
+    390              
+    391              temph = (uint16_t)((uint16_t)((uint16_t)templ << 6) | (uint16_t)((uint16_t)temph << 8));
+    392            }
+    393            
+    394            return ((uint16_t)temph);
+    395          }
+    396          
+    397          /**
+    398            * @brief  Enables or disables the analog watchdog for the given channel.
+    399            * @param   Channel specifies the desired Channel.
+    400            * It can be set of the values of @ref ADC1_Channel_TypeDef.
+    401            * @param   NewState specifies the analog watchdog new state.
+    402            * can have one of the values of @ref FunctionalState.
+    403            * @retval None
+    404            */
+    405          void ADC1_AWDChannelConfig(ADC1_Channel_TypeDef Channel, FunctionalState NewState)
+    406          {
+    407            /* Check the parameters */
+    408            assert_param(IS_FUNCTIONALSTATE_OK(NewState));
+    409            assert_param(IS_ADC1_CHANNEL_OK(Channel));
+    410            
+    411            if (Channel < (uint8_t)8)
+    412            {
+    413              if (NewState != DISABLE)
+    414              {
+    415                ADC1->AWCRL |= (uint8_t)((uint8_t)1 << Channel);
+    416              }
+    417              else /* NewState == DISABLE */
+    418              {
+    419                ADC1->AWCRL &= (uint8_t)~(uint8_t)((uint8_t)1 << Channel);
+    420              }
+    421            }
+    422            else
+    423            {
+    424              if (NewState != DISABLE)
+    425              {
+    426                ADC1->AWCRH |= (uint8_t)((uint8_t)1 << (Channel - (uint8_t)8));
+    427              }
+    428              else /* NewState == DISABLE */
+    429              {
+    430                ADC1->AWCRH &= (uint8_t)~(uint8_t)((uint8_t)1 << (uint8_t)(Channel - (uint8_t)8));
+    431              }
+    432            }
+    433          }
+    434          
+    435          /**
+    436            * @brief  Sets the high threshold of the analog watchdog.
+    437            * @param   Threshold specifies the high threshold value.
+    438            * this value depends on the reference voltage range.
+    439            * @retval None
+    440            */
+    441          void ADC1_SetHighThreshold(uint16_t Threshold)
+    442          {
+    443            ADC1->HTRH = (uint8_t)(Threshold >> (uint8_t)2);
+    444            ADC1->HTRL = (uint8_t)Threshold;
+    445          }
+    446          
+    447          /**
+    448            * @brief  Sets the low threshold of the analog watchdog.
+    449            * @param   Threshold specifies the low threshold value.
+    450            * this value depends on the reference voltage range.
+    451            * @retval None
+    452            */
+    453          void ADC1_SetLowThreshold(uint16_t Threshold)
+    454          {
+    455            ADC1->LTRL = (uint8_t)Threshold;
+    456            ADC1->LTRH = (uint8_t)(Threshold >> (uint8_t)2);
+    457          }
+    458          
+    459          /**
+    460            * @brief  Get one sample of measured signal.
+    461            * @param   Buffer specifies the buffer to read.
+    462            * @retval BufferValue:  value read from the given buffer.
+    463            * @par Required preconditions:
+    464            * ADC1 conversion finished.
+    465            */
+    466          uint16_t ADC1_GetBufferValue(uint8_t Buffer)
+    467          {
+    468            uint16_t temph = 0;
+    469            uint8_t templ = 0;
+    470            
+    471            /* Check the parameters */
+    472            assert_param(IS_ADC1_BUFFER_OK(Buffer));
+    473            
+    474            if ((ADC1->CR2 & ADC1_CR2_ALIGN) != 0) /* Right alignment */
+    475            {
+    476              /* Read LSB first */
+    477              templ = *(uint8_t*)(uint16_t)((uint16_t)ADC1_BaseAddress + (uint8_t)(Buffer << 1) + 1);
+    478              /* Then read MSB */
+    479              temph = *(uint8_t*)(uint16_t)((uint16_t)ADC1_BaseAddress + (uint8_t)(Buffer << 1));
+    480              
+    481              temph = (uint16_t)(templ | (uint16_t)(temph << (uint8_t)8));
+    482            }
+    483            else /* Left alignment */
+    484            {
+    485              /* Read MSB first*/
+    486              temph = *(uint8_t*)(uint16_t)((uint16_t)ADC1_BaseAddress + (uint8_t)(Buffer << 1));
+    487              /* Then read LSB */
+    488              templ = *(uint8_t*)(uint16_t)((uint16_t)ADC1_BaseAddress + (uint8_t)(Buffer << 1) + 1);
+    489              
+    490              temph = (uint16_t)((uint16_t)((uint16_t)templ << 6) | (uint16_t)(temph << 8));
+    491            }
+    492            
+    493            return ((uint16_t)temph);
+    494          }
+    495          
+    496          /**
+    497            * @brief  Checks the specified analog watchdog channel status.
+    498            * @param   Channel: specify the channel of which to check the analog watchdog
+    499            * can be one of the values of @ref ADC1_Channel_TypeDef.
+    500            * @retval FlagStatus Status of the analog watchdog.
+    501            */
+    502          FlagStatus ADC1_GetAWDChannelStatus(ADC1_Channel_TypeDef Channel)
+    503          {
+    504            uint8_t status = 0;
+    505            
+    506            /* Check the parameters */
+    507            assert_param(IS_ADC1_CHANNEL_OK(Channel));
+    508            
+    509            if (Channel < (uint8_t)8)
+    510            {
+    511              status = (uint8_t)(ADC1->AWSRL & (uint8_t)((uint8_t)1 << Channel));
+    512            }
+    513            else /* Channel = 8 | 9 */
+    514            {
+    515              status = (uint8_t)(ADC1->AWSRH & (uint8_t)((uint8_t)1 << (Channel - (uint8_t)8)));
+    516            }
+    517            
+    518            return ((FlagStatus)status);
+    519          }
+    520          
+    521          /**
+    522            * @brief  Checks the specified ADC1 flag status.
+    523            * @param   Flag: ADC1 flag.
+    524            * can be one of the values of @ref ADC1_Flag_TypeDef.
+    525            * @retval FlagStatus Status of the ADC1 flag.
+    526            */
+    527          FlagStatus ADC1_GetFlagStatus(ADC1_Flag_TypeDef Flag)
+    528          {
+    529            uint8_t flagstatus = 0;
+    530            uint8_t temp = 0;
+    531            
+    532            /* Check the parameters */
+    533            assert_param(IS_ADC1_FLAG_OK(Flag));
+    534            
+    535            if ((Flag & 0x0F) == 0x01)
+    536            {
+    537              /* Get OVR flag status */
+    538              flagstatus = (uint8_t)(ADC1->CR3 & ADC1_CR3_OVR);
+    539            }
+    540            else if ((Flag & 0xF0) == 0x10)
+    541            {
+    542              /* Get analog watchdog channel status */
+    543              temp = (uint8_t)(Flag & (uint8_t)0x0F);
+    544              if (temp < 8)
+    545              {
+    546                flagstatus = (uint8_t)(ADC1->AWSRL & (uint8_t)((uint8_t)1 << temp));
+    547              }
+    548              else
+    549              {
+    550                flagstatus = (uint8_t)(ADC1->AWSRH & (uint8_t)((uint8_t)1 << (temp - 8)));
+    551              }
+    552            }
+    553            else  /* Get EOC | AWD flag status */
+    554            {
+    555              flagstatus = (uint8_t)(ADC1->CSR & Flag);
+    556            }
+    557            return ((FlagStatus)flagstatus);
+    558            
+    559          }
+    560          
+    561          /**
+    562            * @brief  Clear the specified ADC1 Flag.
+    563            * @param   Flag: ADC1 flag.
+    564            * can be one of the values of @ref ADC1_Flag_TypeDef.
+    565            * @retval None
+    566            */
+    567          void ADC1_ClearFlag(ADC1_Flag_TypeDef Flag)
+    568          {
+    569            uint8_t temp = 0;
+    570            
+    571            /* Check the parameters */
+    572            assert_param(IS_ADC1_FLAG_OK(Flag));
+    573            
+    574            if ((Flag & 0x0F) == 0x01)
+    575            {
+    576              /* Clear OVR flag status */
+    577              ADC1->CR3 &= (uint8_t)(~ADC1_CR3_OVR);
+    578            }
+    579            else if ((Flag & 0xF0) == 0x10)
+    580            {
+    581              /* Clear analog watchdog channel status */
+    582              temp = (uint8_t)(Flag & (uint8_t)0x0F);
+    583              if (temp < 8)
+    584              {
+    585                ADC1->AWSRL &= (uint8_t)~(uint8_t)((uint8_t)1 << temp);
+    586              }
+    587              else
+    588              {
+    589                ADC1->AWSRH &= (uint8_t)~(uint8_t)((uint8_t)1 << (temp - 8));
+    590              }
+    591            }
+    592            else  /* Clear EOC | AWD flag status */
+    593            {
+    594              ADC1->CSR &= (uint8_t) (~Flag);
+    595            }
+    596          }
+    597          
+    598          /**
+    599            * @brief  Returns the specified pending bit status
+    600            * @param   ITPendingBit : the IT pending bit to check.
+    601            * This parameter can be one of the following values:
+    602            *    - ADC1_IT_AWD   : Analog WDG IT status
+    603            *    - ADC1_IT_AWS0 : Analog channel 0 IT status
+    604            *    - ADC1_IT_AWS1 : Analog channel 1 IT status
+    605            *    - ADC1_IT_AWS2 : Analog channel 2 IT status
+    606            *    - ADC1_IT_AWS3 : Analog channel 3 IT status
+    607            *    - ADC1_IT_AWS4 : Analog channel 4 IT status
+    608            *    - ADC1_IT_AWS5 : Analog channel 5 IT status
+    609            *    - ADC1_IT_AWS6 : Analog channel 6 IT status
+    610            *    - ADC1_IT_AWS7 : Analog channel 7 IT status
+    611            *    - ADC1_IT_AWS8 : Analog channel 8 IT status
+    612            *    - ADC1_IT_AWS9 : Analog channel 9 IT status
+    613            *    - ADC1_IT_EOC    : EOC pending bit
+    614            * @retval ITStatus: status of the specified pending bit.
+    615            */
+    616          ITStatus ADC1_GetITStatus(ADC1_IT_TypeDef ITPendingBit)
+    617          {
+    618            ITStatus itstatus = RESET;
+    619            uint8_t temp = 0;
+    620            
+    621            /* Check the parameters */
+    622            assert_param(IS_ADC1_ITPENDINGBIT_OK(ITPendingBit));
+    623            
+    624            if (((uint16_t)ITPendingBit & 0xF0) == 0x10)
+    625            {
+    626              /* Get analog watchdog channel status */
+    627              temp = (uint8_t)((uint16_t)ITPendingBit & 0x0F);
+    628              if (temp < 8)
+    629              {
+    630                itstatus = (ITStatus)(ADC1->AWSRL & (uint8_t)((uint8_t)1 << temp));
+    631              }
+    632              else
+    633              {
+    634                itstatus = (ITStatus)(ADC1->AWSRH & (uint8_t)((uint8_t)1 << (temp - 8)));
+    635              }
+    636            }
+    637            else  /* Get EOC | AWD flag status */
+    638            {
+    639              itstatus = (ITStatus)(ADC1->CSR & (uint8_t)ITPendingBit);
+    640            }
+    641            return ((ITStatus)itstatus);
+    642          }
+    643          
+    644          /**
+    645            * @brief  Clear the ADC1 End of Conversion pending bit.
+    646            * @param   ITPendingBit : the IT pending bit to clear.
+    647            * This parameter can be one of the following values:
+    648            *    - ADC1_IT_AWD   : Analog WDG IT status
+    649            *    - ADC1_IT_AWS0 : Analog channel 0 IT status
+    650            *    - ADC1_IT_AWS1 : Analog channel 1 IT status
+    651            *    - ADC1_IT_AWS2 : Analog channel 2 IT status
+    652            *    - ADC1_IT_AWS3 : Analog channel 3 IT status
+    653            *    - ADC1_IT_AWS4 : Analog channel 4 IT status
+    654            *    - ADC1_IT_AWS5 : Analog channel 5 IT status
+    655            *    - ADC1_IT_AWS6 : Analog channel 6 IT status
+    656            *    - ADC1_IT_AWS7 : Analog channel 7 IT status
+    657            *    - ADC1_IT_AWS8 : Analog channel 8 IT status
+    658            *    - ADC1_IT_AWS9 : Analog channel 9 IT status
+    659            *    - ADC1_IT_EOC  : EOC pending bit
+    660            * @retval None
+    661            */
+    662          void ADC1_ClearITPendingBit(ADC1_IT_TypeDef ITPendingBit)
+    663          {
+    664            uint8_t temp = 0;
+    665            
+    666            /* Check the parameters */
+    667            assert_param(IS_ADC1_ITPENDINGBIT_OK(ITPendingBit));
+    668            
+    669            if (((uint16_t)ITPendingBit & 0xF0) == 0x10)
+    670            {
+    671              /* Clear analog watchdog channel status */
+    672              temp = (uint8_t)((uint16_t)ITPendingBit & 0x0F);
+    673              if (temp < 8)
+    674              {
+    675                ADC1->AWSRL &= (uint8_t)~(uint8_t)((uint8_t)1 << temp);
+    676              }
+    677              else
+    678              {
+    679                ADC1->AWSRH &= (uint8_t)~(uint8_t)((uint8_t)1 << (temp - 8));
+    680              }
+    681            }
+    682            else  /* Clear EOC | AWD flag status */
+    683            {
+    684              ADC1->CSR &= (uint8_t)((uint16_t)~(uint16_t)ITPendingBit);
+    685            }
+    686          }
+    687          
+    688          /**
+    689            * @}
+    690            */
+    691            
+    692          /**
+    693            * @}
+    694            */
+    695            
+    696          
+    697          /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+      75  ?_0
+     203  ADC1_AWDChannelConfig
+     186  ADC1_ClearFlag
+     191  ADC1_ClearITPendingBit
+      48  ADC1_Cmd
+     195  ADC1_ConversionConfig
+      48  ADC1_DataBufferCmd
+      49  ADC1_DeInit
+      93  ADC1_ExternalTriggerConfig
+     131  ADC1_GetAWDChannelStatus
+     145  ADC1_GetBufferValue
+      86  ADC1_GetConversionValue
+     193  ADC1_GetFlagStatus
+     183  ADC1_GetITStatus
+      95  ADC1_ITConfig
+     425  ADC1_Init
+      86  ADC1_PrescalerConfig
+      48  ADC1_ScanModeCmd
+     255  ADC1_SchmittTriggerConfig
+      15  ADC1_SetHighThreshold
+      15  ADC1_SetLowThreshold
+       5  ADC1_StartConversion
+
+ 
+ 2 695 bytes in section .far_func.text
+    75 bytes in section .near.rodata
+ 
+ 2 695 bytes of CODE  memory
+    75 bytes of CONST memory
+
+Errors: none
+Warnings: none

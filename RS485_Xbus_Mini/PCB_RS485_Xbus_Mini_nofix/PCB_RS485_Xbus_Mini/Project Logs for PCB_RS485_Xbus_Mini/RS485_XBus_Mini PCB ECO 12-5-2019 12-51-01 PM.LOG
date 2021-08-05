@@ -1,0 +1,14 @@
+Removed Pin From Net: NetName=RS485_RX Pin=LED1-2
+Removed Pin From Net: NetName=RS485_TX Pin=LED2-2
+Change Component Footprint: Designator=U2 Old Footprint=TSSOP 20 New Footprint=TSSOP65P440X650-20N
+Change Component Designator: OldDesignator=TVS3 NewDesignator=TVS4
+Added Component: Designator=U3(SOT-89-321)
+Add component. Clean all parameters for all variants
+Added Pin To Net: NetName=MCU_RX Pin=LED1-2
+Added Pin To Net: NetName=MCU_TX Pin=LED2-2
+Added Pin To Net: NetName=VIN Pin=U3-1
+Added Pin To Net: NetName=GND Pin=U3-2
+Added Pin To Net: NetName=+5V Pin=U3-3
+Added Member To Class: ClassName=RS485_Xbus_Mini Member=Component TVS4 PSD12C
+Added Member To Class: ClassName=RS485_Xbus_Mini Member=Component U3 78XX
+Added Room: Name=RS485_Xbus_Mini

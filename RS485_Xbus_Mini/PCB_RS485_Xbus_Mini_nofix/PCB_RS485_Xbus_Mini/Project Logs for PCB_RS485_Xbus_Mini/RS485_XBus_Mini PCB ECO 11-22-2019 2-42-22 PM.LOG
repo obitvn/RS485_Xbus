@@ -1,0 +1,11 @@
+Added Component: Designator=IC1(SO-8)
+Add component. Clean all parameters for all variants
+Added Pin To Net: NetName=RS485_TX Pin=IC1-1
+Added Pin To Net: NetName=MAX_DIR Pin=IC1-2
+Added Pin To Net: NetName=MAX_DIR Pin=IC1-3
+Added Pin To Net: NetName=RS485_RX Pin=IC1-4
+Added Pin To Net: NetName=RJ45-7 Pin=IC1-5
+Added Pin To Net: NetName=NetF2_1 Pin=IC1-6
+Added Pin To Net: NetName=NetF1_1 Pin=IC1-7
+Added Pin To Net: NetName=+5V Pin=IC1-8
+Added Member To Class: ClassName=RS485_Xbus_Mini Member=Component IC1 MAX485

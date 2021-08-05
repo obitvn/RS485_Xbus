@@ -1,0 +1,174 @@
+###############################################################################
+#
+# IAR C/C++ Compiler V3.11.1.207 for STM8                 17/Jan/2020  20:56:11
+# Copyright 2010-2019 IAR Systems AB.
+# PC-locked license - IAR Embedded Workbench for STMicroelectronics STM8
+#
+#    Source file  =  
+#        H:\Project_For_AKS\STM8S\Libraries\STM8S_StdPeriph_Driver\src\stm8s_wwdg.c
+#    Command line =  
+#        -f C:\Users\chuti\AppData\Local\Temp\EW2666.tmp
+#        (H:\Project_For_AKS\STM8S\Libraries\STM8S_StdPeriph_Driver\src\stm8s_wwdg.c
+#        -e -On --no_cse --no_unroll --no_inline --no_code_motion --no_tbaa
+#        --no_cross_call --debug --code_model medium --data_model medium -o
+#        H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\STM8S103\Obj
+#        --dlib_config E:\CaiPhanMem\IAR-STM8\stm8\LIB\dlstm8mmn.h -D STM8S003
+#        -lcN H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\STM8S103\List
+#        -I H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\..\ -I
+#        H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\..\..\..\Libraries\STM8S_StdPeriph_Driver\inc\
+#        --vregs 16)
+#    Locale       =  English_USA.1252
+#    List file    =  
+#        H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\STM8S103\List\stm8s_wwdg.lst
+#    Object file  =  
+#        H:\Project_For_AKS\STM8S\Project\RS485_Xbus\EWSTM8\STM8S103\Obj\stm8s_wwdg.o
+#
+###############################################################################
+
+H:\Project_For_AKS\STM8S\Libraries\STM8S_StdPeriph_Driver\src\stm8s_wwdg.c
+      1          /**
+      2            ********************************************************************************
+      3            * @file    stm8s_wwdg.c
+      4            * @author  MCD Application Team
+      5            * @version V2.2.0
+      6            * @date    30-September-2014
+      7            * @brief   This file contains all the functions for the WWDG peripheral.
+      8             ******************************************************************************
+      9            * @attention
+     10            *
+     11            * <h2><center>&copy; COPYRIGHT 2014 STMicroelectronics</center></h2>
+     12            *
+     13            * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
+     14            * You may not use this file except in compliance with the License.
+     15            * You may obtain a copy of the License at:
+     16            *
+     17            *        http://www.st.com/software_license_agreement_liberty_v2
+     18            *
+     19            * Unless required by applicable law or agreed to in writing, software 
+     20            * distributed under the License is distributed on an "AS IS" BASIS, 
+     21            * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     22            * See the License for the specific language governing permissions and
+     23            * limitations under the License.
+     24            *
+     25            ******************************************************************************
+     26            */
+     27          
+     28          /* Includes ------------------------------------------------------------------*/
+     29          #include "stm8s_wwdg.h"
+     30          
+     31          /** @addtogroup STM8S_StdPeriph_Driver
+     32            * @{
+     33            */
+     34          /* Private define ------------------------------------------------------------*/
+     35          #define BIT_MASK          ((uint8_t)0x7F)
+     36          /* Private macro -------------------------------------------------------------*/
+     37          /* Private variables ---------------------------------------------------------*/
+     38          /* Private function prototypes -----------------------------------------------*/
+     39          /* Private functions ---------------------------------------------------------*/
+     40          
+     41          /** @addtogroup WWDG_Public_Functions
+     42            * @{
+     43            */
+     44          
+     45          /**
+     46            * @brief  Initializes the WWDG peripheral.
+     47            *         This function set Window Register = WindowValue, Counter Register
+     48            *         according to Counter and \b ENABLE \b WWDG
+     49            * @param  Counter : WWDG counter value
+     50            * @param  WindowValue : specifies the WWDG Window Register, range is 0x00 to 0x7F.
+     51            * @retval None
+     52            */
+     53          void WWDG_Init(uint8_t Counter, uint8_t WindowValue)
+     54          {
+     55            /* Check the parameters */
+     56            assert_param(IS_WWDG_WINDOWLIMITVALUE_OK(WindowValue));
+     57            
+     58            WWDG->WR = WWDG_WR_RESET_VALUE;
+     59            WWDG->CR = (uint8_t)((uint8_t)(WWDG_CR_WDGA | WWDG_CR_T6) | (uint8_t)Counter);
+     60            WWDG->WR = (uint8_t)((uint8_t)(~WWDG_CR_WDGA) & (uint8_t)(WWDG_CR_T6 | WindowValue));
+     61          }
+     62          
+     63          /**
+     64            * @brief  Refreshes the WWDG peripheral.
+     65            * @param  Counter :  WWDG Counter Value
+     66            *         This parameter must be a number between 0x40 and 0x7F.
+     67            * @retval None
+     68            */
+     69          void WWDG_SetCounter(uint8_t Counter)
+     70          {
+     71            /* Check the parameters */
+     72            assert_param(IS_WWDG_COUNTERVALUE_OK(Counter));
+     73            
+     74            /* Write to T[6:0] bits to configure the counter value, no need to do
+     75            a read-modify-write; writing a 0 to WDGA bit does nothing */
+     76            WWDG->CR = (uint8_t)(Counter & (uint8_t)BIT_MASK);
+     77          }
+     78          
+     79          /**
+     80            * @brief Gets the WWDG Counter Value.
+     81            *        This value could be used to check if WWDG is in the window, where
+     82            *        refresh is allowed.
+     83            * @param  None
+     84            * @retval WWDG Counter Value
+     85            */
+     86          uint8_t WWDG_GetCounter(void)
+     87          {
+     88            return(WWDG->CR);
+     89          }
+     90          
+     91          /**
+     92            * @brief  Generates immediate WWDG RESET.
+     93            * @param  None
+     94            * @retval None
+     95            */
+     96          void WWDG_SWReset(void)
+     97          {
+     98            WWDG->CR = WWDG_CR_WDGA; /* Activate WWDG, with clearing T6 */
+     99          }
+    100          
+    101          /**
+    102            * @brief  Sets the WWDG window value.
+    103            * @param  WindowValue: specifies the window value to be compared to the
+    104            *         downcounter.
+    105            *         This parameter value must be lower than 0x80.
+    106            * @retval None
+    107            */
+    108          void WWDG_SetWindowValue(uint8_t WindowValue)
+    109          {
+    110            /* Check the parameters */
+    111            assert_param(IS_WWDG_WINDOWLIMITVALUE_OK(WindowValue));
+    112            
+    113            WWDG->WR = (uint8_t)((uint8_t)(~WWDG_CR_WDGA) & (uint8_t)(WWDG_CR_T6 | WindowValue));
+    114          }
+    115          
+    116          /**
+    117            * @}
+    118            */
+    119            
+    120          /**
+    121            * @}
+    122            */
+    123            
+    124          
+    125          /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+      75  ?_0
+       4  WWDG_GetCounter
+      54  WWDG_Init
+       5  WWDG_SWReset
+      37  WWDG_SetCounter
+      39  WWDG_SetWindowValue
+
+ 
+ 139 bytes in section .far_func.text
+  75 bytes in section .near.rodata
+ 
+ 139 bytes of CODE  memory
+  75 bytes of CONST memory
+
+Errors: none
+Warnings: none
