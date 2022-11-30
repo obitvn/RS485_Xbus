@@ -3,4 +3,4 @@
  
  RS485 network (no master, no slave) running on stm8s
  
-![image](https://user-images.githubusercontent.com/43460353/204752737-f6a43949-a739-465a-9deb-6f90a9db2186.png)
+![image](https://user-images.githubusercontent.com/43460353/204753136-797162bd-f543-49b5-87fa-bae07743d82d.png)
